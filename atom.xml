@@ -42,4 +42,30 @@
     
   </entry>
   
+  <entry>
+    <title>Git管理空文件</title>
+    <link href="http://zhuhengwei.com/2016/02/19/Git%E7%AE%A1%E7%90%86%E7%A9%BA%E6%96%87%E4%BB%B6/"/>
+    <id>http://zhuhengwei.com/2016/02/19/Git管理空文件/</id>
+    <published>2016-02-19T12:35:45.000Z</published>
+    <updated>2016-02-20T14:25:03.555Z</updated>
+    
+    <content type="html">&lt;p&gt;把文件夹中的所有文件忽略不进去git仓库，但是让这个文件夹进去git。例如项目里的upload文件夹，里面的文件和项目本身没有任何关系，而且特别容易发生冲突，拉取推送都会浪费时间。&lt;/p&gt;
+&lt;h3 id=&quot;方法&quot;&gt;&lt;a href=&quot;#方法&quot; class=&quot;headerlink&quot; title=&quot;方法&quot;&gt;&lt;/a&gt;方法&lt;/h3&gt;&lt;p&gt;(以upload目录为例)在upload目录下下新建.gitignore文件中，将下面两行写入文件。新建时可以从其他地方复制一个.gitignore文件或者新建文本文件，重命名为.gitignore.(注意前后都有一个点，windows会自动命名为.gitignore)&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;/*  &amp;#10;!/.gitignore&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;h3 id=&quot;解释&quot;&gt;&lt;a href=&quot;#解释&quot; class=&quot;headerlink&quot; title=&quot;解释&quot;&gt;&lt;/a&gt;解释&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;1.忽略该目录下所有文件;
+2.不忽略.gitignore文件，就是跟踪该文件，而在myeclispe和tomcat中，该文件透明。
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;于是可以保证upload文件夹不是空，而且忽略其他文件.&lt;br&gt;如果想让git跟踪其他文件，在.gitignore中添加&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;!/xxx.xxx&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;把文件夹中的所有文件忽略不进去git仓库，但是让这个文件夹进去git。例如项目里的upload文件夹，里面的文件和项目本身没有任何关系，而且特别容易发生冲突，拉取推送都会浪费时间。&lt;/p&gt;
+&lt;h3 id=&quot;方法&quot;&gt;&lt;a href=&quot;#方法&quot; class=&quot;headerlin
+    
+    </summary>
+    
+    
+      <category term="Git" scheme="http://zhuhengwei.com/tags/Git/"/>
+    
+  </entry>
+  
 </feed>
