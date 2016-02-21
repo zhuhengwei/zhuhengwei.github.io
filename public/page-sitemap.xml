@@ -7,8 +7,15 @@
     </url>
     
     <url>
-        <loc>http://zhuhengwei.com/404/index.html</loc>
-        <lastmod>2016-02-20T14:19:47.013Z</lastmod>
+        <loc>http://zhuhengwei.com//404.html</loc>
+        <lastmod>2016-02-21T13:42:17.865Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>http://zhuhengwei.com/sitemap/index.html</loc>
+        <lastmod>2016-02-21T13:18:18.216Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>

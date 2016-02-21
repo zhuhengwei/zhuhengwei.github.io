@@ -162,7 +162,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Git/" style="font-size: 10px;">Git</a>
+                        <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/IP/" style="font-size: 10px;">IP</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/mysql/" style="font-size: 20px;">mysql</a> <a href="/tags/shell/" style="font-size: 20px;">shell</a> <a href="/tags/storm/" style="font-size: 10px;">storm</a> <a href="/tags/域名/" style="font-size: 10px;">域名</a> <a href="/tags/备份/" style="font-size: 10px;">备份</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/空文件夹/" style="font-size: 10px;">空文件夹</a> <a href="/tags/脚本/" style="font-size: 10px;">脚本</a> <a href="/tags/随机/" style="font-size: 10px;">随机</a> <a href="/tags/集群/" style="font-size: 10px;">集群</a>
                     </div>
                 </section>
                 
@@ -252,7 +252,7 @@
   
     <div class="article-meta">
       <a href="/2016/02/20/hello-world/" class="article-date">
-      <time datetime="2016-02-20T14:28:35.663Z" itemprop="datePublished">2016-02-20</time>
+      <time datetime="2016-02-20T14:39:28.189Z" itemprop="datePublished">2016-02-20</time>
 </a>
     </div>
   
@@ -301,11 +301,11 @@
 
 
   
-    <article id="post-Git管理空文件夹" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Shell脚本启动Storm集群" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/02/19/Git管理空文件夹/" class="article-date">
-      <time datetime="2016-02-19T12:35:45.000Z" itemprop="datePublished">2016-02-19</time>
+      <a href="/2015/12/06/Shell脚本启动Storm集群/" class="article-date">
+      <time datetime="2015-12-06T12:35:45.000Z" itemprop="datePublished">2015-12-06</time>
 </a>
     </div>
   
@@ -318,7 +318,277 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/19/Git管理空文件夹/">Git管理空文件夹</a>
+      <a class="article-title" href="/2015/12/06/Shell脚本启动Storm集群/">Shell脚本启动Storm集群</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>最近因为学习需要，搭建了storm集群，装了比较旧的版本storm-0.8.1,也安装了ZMQ，中间安装过程之曲折不属本文范围，以后再整理。本文先把storm集群启动的脚本放出,其中包含了启动zookeeper。其他集群，spark，hadoop启动、停止脚本可参考本脚本。代码不完善之处依照具体业务修改。</p>
+<h5 id="启动之前的准备工作"><a href="#启动之前的准备工作" class="headerlink" title="启动之前的准备工作"></a>启动之前的准备工作</h5><p>1）机器配置,ip-机器名 在hosts中配置好<br>2）配置各节点storm 的STORM_HOME和ZOOKEEPER_HOME<br>3）各节点SSH免密码访问<br>Done</p>
+<h5 id="脚本代码"><a href="#脚本代码" class="headerlink" title="脚本代码"></a>脚本代码</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="shebang">#!/bin/bash</span></span><br><span class="line"><span class="comment">##准备工作：</span></span><br><span class="line"><span class="comment">#机器配置,ip-机器名 在hosts中配置好</span></span><br><span class="line"><span class="comment">#配置各节点storm 的STORM_HOME和ZOOKEEPER_HOME</span></span><br><span class="line"><span class="comment">#SSH免密码访问</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#脚本在主节点下运行</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#zk的节点，3台，不在主节点启动</span></span><br><span class="line">zookeeperServers=<span class="string">'Server58 Server60 Server62'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#工作节点，不含主节点</span></span><br><span class="line">supervisorServers=<span class="string">'Server58 Server60 Server62'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#nimbus和ui节点</span></span><br><span class="line">nimbusServer=<span class="string">'Server76'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#启动各个zookeeper server</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="variable">$zookeeperServers</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">ssh -T <span class="variable">$i</span> &lt;&lt;EOF</span><br><span class="line">	<span class="built_in">source</span> /etc/profile</span><br><span class="line">	<span class="built_in">cd</span> \<span class="variable">$ZOOKEEPER_HOME</span></span><br><span class="line">	./bin/zkServer.sh start</span><br><span class="line">EOF</span><br><span class="line"><span class="built_in">echo</span> 启动zookeeper<span class="variable">$i</span>...[ <span class="keyword">done</span> ]</span><br><span class="line">sleep <span class="number">1</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#启动主节点的nimbus/ui</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$STORM_HOME</span></span><br><span class="line">python bin/storm nimbus &gt;/dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br><span class="line">python bin/storm supervisor &gt;/dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br><span class="line">python bin/storm ui &gt;/dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br><span class="line"></span><br><span class="line">sleep <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> 启动主节点<span class="variable">$nimbusServer</span> nimbus...[ <span class="keyword">done</span> ]</span><br><span class="line"><span class="built_in">echo</span> 启动主节点<span class="variable">$nimbusServer</span> supervisor...[ <span class="keyword">done</span> ]</span><br><span class="line"><span class="built_in">echo</span> 启动主节点<span class="variable">$nimbusServer</span> UI...[ <span class="keyword">done</span> ]</span><br><span class="line"></span><br><span class="line"><span class="comment">#启动其余所有的supervisor</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="variable">$supervisorServers</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">ssh -T <span class="variable">$j</span> &lt;&lt;EOF</span><br><span class="line">	<span class="built_in">source</span> /etc/profile</span><br><span class="line">	<span class="built_in">cd</span> \<span class="variable">$STORM_HOME</span></span><br><span class="line">	python bin/storm supervisor &gt;/dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br><span class="line">EOF</span><br><span class="line"><span class="built_in">echo</span> 启动从节点<span class="variable">$j</span> supervisor...[ <span class="keyword">done</span> ]</span><br><span class="line">sleep <span class="number">1</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#检查nimbus是否启动</span></span><br><span class="line">count=`jps |grep nimbus |wc <span class="operator">-l</span>`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$count</span> = <span class="number">0</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">cd</span> <span class="variable">$STORM_HOME</span></span><br><span class="line">	python bin/storm nimbus &gt;/dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#检查UI是否启动</span></span><br><span class="line">count=`jps |grep core |wc <span class="operator">-l</span>`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$count</span> = <span class="number">0</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">cd</span> <span class="variable">$STORM_HOME</span></span><br><span class="line">	python bin/storm ui &gt;/dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#检查其余各个supervisor是否启动</span></span><br><span class="line"><span class="comment">#如果刚才没有正常启动，则启动</span></span><br><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> <span class="variable">$supervisorServers</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">ssh -T <span class="variable">$k</span> &lt;&lt;EOF</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line">count3=`jps |grep supervisor |wc <span class="operator">-l</span>`</span><br><span class="line"><span class="keyword">if</span> [ \<span class="variable">$count3</span> = <span class="number">0</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">cd</span> \<span class="variable">$STORM_HOME</span> </span><br><span class="line">	python bin/storm supervisor &gt;/dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">EOF</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#检查主节点supervisor是否启动</span></span><br><span class="line">count2=`jps |grep supervisor |wc <span class="operator">-l</span>`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$count2</span> = <span class="number">0</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">cd</span> <span class="variable">$STORM_HOME</span></span><br><span class="line">	python bin/storm supervisor &gt;/dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">sleep <span class="number">2</span></span><br><span class="line"><span class="built_in">echo</span> storm集群启动成功....[ <span class="keyword">done</span> ]</span><br></pre></td></tr></table></figure>
+<p>附CSDN代码块链接。<a href="https://code.csdn.net/snippets/1437227/master/download" target="_blank" rel="external">来自 CODE的代码片。</a></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/大数据/">大数据</a><a class="article-category-link" href="/categories/大数据/系统运维/">系统运维</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/storm/">storm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/集群/">集群</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-mysql随机更新表里的数据" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/07/10/mysql随机更新表里的数据/" class="article-date">
+      <time datetime="2015-07-10T12:55:45.000Z" itemprop="datePublished">2015-07-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/07/10/mysql随机更新表里的数据/">mysql随机更新表里的数据</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="mysql-随机更新数据库里的几条数据"><a href="#mysql-随机更新数据库里的几条数据" class="headerlink" title="mysql 随机更新数据库里的几条数据"></a>mysql 随机更新数据库里的几条数据</h3><p>有些情况，比如下图表中数据，除了id不一样，其余都一样。如下图：<br><img src="http://img.blog.csdn.net/20150710205210086" alt=""></p>
+<p>出于某些原因，我们不能得到其id，但是想<strong>更新其中的某些数据,不是全部</strong>，因为数据都是一样的，所以更新其中的哪一条都是一样的。<br>那么要更新其中的比如3条数据怎么办呢？</p>
+<p><strong>sql语句如下：</strong><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">update</span> test_table <span class="keyword">set</span> <span class="keyword">type</span> = <span class="string">"aa"</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">rand</span>() <span class="keyword">limit</span> <span class="number">3</span>;</span></span><br></pre></td></tr></table></figure></p>
+<p>运行完如上语句，表中数据如下：<br><img src="http://img.blog.csdn.net/20150710205332571" alt=""></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/数据库管理/">数据库管理</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/">mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/随机/">随机</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-mysql批量备份多表" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/07/04/mysql批量备份多表/" class="article-date">
+      <time datetime="2015-07-04T06:26:45.000Z" itemprop="datePublished">2015-07-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/07/04/mysql批量备份多表/">mysql批量备份多表</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="1-批量备份-mysql-多表，每个表一个-sql"><a href="#1-批量备份-mysql-多表，每个表一个-sql" class="headerlink" title="1. 批量备份 mysql 多表，每个表一个.sql"></a>1. 批量备份 mysql 多表，每个表一个.sql</h3><p>对于每天生成的表，需要把以前的表备份，即定义起始的表和结束的表，针对有规律的表的备份。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="shebang">#!/bin/bash</span></span><br><span class="line">IPAddress=<span class="number">8.8</span>.<span class="number">8.8</span></span><br><span class="line">DB_<span class="built_in">pwd</span>=mysqltest   <span class="comment">#数据库密码；</span></span><br><span class="line">DB_name=mysqltest   <span class="comment">#数据库名称；</span></span><br><span class="line">table_name=<span class="string">"zhw_"</span>  <span class="comment">#数据表名称前缀；</span></span><br><span class="line"></span><br><span class="line">Start=<span class="number">20150112</span> <span class="comment"># 每天生成的表 的开始的第一个</span></span><br><span class="line">End=<span class="number">20150610</span>   <span class="comment">#每天生成的表 最后需要备份的一个</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">BACKUP_tmp=/usr/<span class="built_in">local</span>/mysqltestbackup/backupsql     <span class="comment">#备份文件临时存放目录；</span></span><br><span class="line">BACKUP_path=/usr/<span class="built_in">local</span>/mysqltestbackup    <span class="comment">#备份文件压缩打包存放目录；</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">DATERange=`seq <span class="operator">-f</span>%.f <span class="variable">$Start</span> <span class="variable">$End</span> | date <span class="operator">-f</span> - <span class="string">"+%Y%m%d"</span> <span class="number">2</span>&gt;/dev/null` <span class="comment">#日期范围</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="variable">$DATERange</span></span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">    mysqldump -h<span class="variable">$IPAddress</span>  -umysqltest -p<span class="variable">$DB_pwd</span> <span class="variable">$DB_name</span> <span class="variable">$table_name</span><span class="variable">$i</span> &gt; <span class="variable">$BACKUP_tmp</span>/<span class="variable">$table_name</span><span class="variable">$i</span>-$(date +%Y%m%d%H%M%S).sql</span><br><span class="line">  sleep <span class="number">1</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">  sleep <span class="number">10</span></span><br><span class="line"><span class="comment">#将备份数据打包；</span></span><br><span class="line">    tar -cvzf <span class="variable">$BACKUP_path</span>/<span class="variable">$DB_name</span>-<span class="variable">$table_name</span>-$(date +%Y%m%d%H%M%S).tar.gz <span class="variable">$BACKUP_tmp</span>/*</span><br><span class="line"><span class="built_in">exit</span> <span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="2-备份数据库里的所有的表，每个表一个-sql"><a href="#2-备份数据库里的所有的表，每个表一个-sql" class="headerlink" title="2. 备份数据库里的所有的表，每个表一个.sql"></a>2. 备份数据库里的所有的表，每个表一个.sql</h3><p>1）首先需要从information_schema表中获得每个表的名称,保存为文件，如all_tables<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> <span class="operator"><span class="keyword">SELECT</span> TABLE_NAME <span class="keyword">FROM</span> information_schema.<span class="string">`TABLES`</span></span><br><span class="line"><span class="keyword">WHERE</span> TABLE_SCHEMA =<span class="string">'mysqltest'</span> <span class="keyword">AND</span> TABLE_TYPE =<span class="string">'BASE TABLE'</span></span></span><br></pre></td></tr></table></figure></p>
+<p>2） 执行脚本.<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="shebang">#!/bin/bash</span></span><br><span class="line">IPAddress=<span class="number">8.8</span>.<span class="number">8.8</span></span><br><span class="line">DB_<span class="built_in">pwd</span>=mysqltest   <span class="comment">#数据库密码；</span></span><br><span class="line">DB_name=mysqltest   <span class="comment">#数据库名称；</span></span><br><span class="line"></span><br><span class="line">BACKUP_tmp=/usr/<span class="built_in">local</span>/mysqltestbackup/backupsql     <span class="comment">#备份文件临时存放目录；</span></span><br><span class="line">BACKUP_path=/usr/<span class="built_in">local</span>/mysqltestbackup    <span class="comment">#备份文件压缩打包存放目录；</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `cat all_tables`</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">    mysqldump -h<span class="variable">$IPAddress</span>  -umysqltest -p<span class="variable">$DB_pwd</span> <span class="variable">$DB_name</span> <span class="variable">$i</span> &gt; <span class="variable">$BACKUP_tmp</span>/<span class="variable">$i</span>-$(date +%Y%m%d%H%M%S).sql</span><br><span class="line">  sleep <span class="number">1</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">  sleep <span class="number">10</span></span><br><span class="line"><span class="comment">#将备份数据打包；</span></span><br><span class="line">    tar -cvzf <span class="variable">$BACKUP_path</span>/<span class="variable">$DB_name</span>-$(date +%Y%m%d%H%M%S).tar.gz <span class="variable">$BACKUP_tmp</span>/*</span><br><span class="line"><span class="built_in">exit</span> <span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="3-备份整个数据库，一个-sql-不赘述。"><a href="#3-备份整个数据库，一个-sql-不赘述。" class="headerlink" title="3. 备份整个数据库，一个.sql,不赘述。"></a>3. 备份整个数据库，一个.sql,不赘述。</h3><h3 id="4-备份多表，无规律。若把表名准备好，结合第二个脚本使用，也可以每个表单个-sql。"><a href="#4-备份多表，无规律。若把表名准备好，结合第二个脚本使用，也可以每个表单个-sql。" class="headerlink" title="4. 备份多表，无规律。若把表名准备好，结合第二个脚本使用，也可以每个表单个.sql。"></a>4. 备份多表，无规律。若把表名准备好，结合第二个脚本使用，也可以每个表单个.sql。</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -h<span class="variable">$IPAddress</span>  -umysqltest -p<span class="variable">$DB_pwd</span> <span class="variable">$DB_name</span> 表<span class="number">1</span> 表<span class="number">2</span> 表<span class="number">3</span>.... &gt; <span class="variable">$BACKUP_tmp</span>/<span class="variable">$i</span>-$(date +%Y%m%d%H%M%S).sql</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/数据库管理/">数据库管理</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/">mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/备份/">备份</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/脚本/">脚本</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-域名绑定本机Tomcat项目" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2014/12/02/域名绑定本机Tomcat项目/" class="article-date">
+      <time datetime="2014-12-02T12:14:45.000Z" itemprop="datePublished">2014-12-02</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/02/域名绑定本机Tomcat项目/">域名绑定本机Tomcat项目</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h5 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h5><ul>
+<li>本文的前提是已经注册了域名，并且在域名管理里添加了A记录，且指向本机IP.</li>
+<li>服务器为tomcat,在自己电脑上.</li>
+<li>本文没有涉及动态域名绑定IP的问题.</li>
+</ul>
+<h5 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h5><ol>
+<li>启动服务器后，浏览器输入localhost:8080/xxx就可以访问到xxx项目，或许你还没有设置首页，那么需要输入localhost:8080/xxx/yyy.jsp。接下来要去掉8080，因为域名管理不能设置端口，而http默认都是80，因此需要修改tomcat的conf文件夹下的server.xml。我们打开这个文件，找到8080，把8080改成80即可。再次输入localhost/xxx就可以访问到本地项目，这一步应该都没有问题。</li>
+<li><p>绑定域名，修改server.xml找到，下面一行。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">Host</span> <span class="attribute">name</span>=<span class="value">"localhost"</span> <span class="attribute">appBase</span>=<span class="value">"webapps"</span> <span class="attribute">unpackWARs</span>=<span class="value">"true"</span> <span class="attribute">autoDeploy</span>=<span class="value">"true"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p> <strong>修改为</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">Host</span> <span class="attribute">name</span>=<span class="value">"www.zzz.zzz"</span> <span class="attribute">debug</span>=<span class="value">"0"</span> <span class="attribute">appBase</span>=<span class="value">"webapps"</span> <span class="attribute">unpackWARs</span>=<span class="value">"true"</span> <span class="attribute">autoDeploy</span>=<span class="value">"true"</span> <span class="attribute">xmlValidation</span>=<span class="value">"false"</span> <span class="attribute">xmlNamespaceAware</span>=<span class="value">"false"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p> 重启后浏览器输入www.zzz.zzz/xxx就可以访问项目，但是如何做到只输入www.zzz.zzz就访问项目呢？</p>
+</li>
+<li><p>再次找到server.xml。只需要在前面加上如下代码(注意这个位置)一般都在xml文件最下面。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">Context</span> <span class="attribute">docBase</span>=<span class="value">"/xxx"</span> <span class="attribute">path</span>=<span class="value">""</span> <span class="attribute">reloadable</span>=<span class="value">"true"</span>/&gt;</span> // 这里的"/xxx"要有斜杠.</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>此时直接访问www.zzz.zzz就会直接访问到刚才设置的项目。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/服务器运维/">服务器运维</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IP/">IP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tomcat/">Tomcat</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/域名/">域名</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-Git管理空文件夹" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2014/11/24/Git管理空文件夹/" class="article-date">
+      <time datetime="2014-11-24T06:36:45.000Z" itemprop="datePublished">2014-11-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/24/Git管理空文件夹/">Git管理空文件夹</a>
     </h1>
   
 
@@ -340,10 +610,14 @@
     <div class="article-info article-info-index">
       
       
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/项目协作/">项目协作</a>
+    </div>
+
 
       
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/空文件夹/">空文件夹</a></li></ul>
     </div>
 
       
