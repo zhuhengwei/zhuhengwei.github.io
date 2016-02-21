@@ -888,6 +888,13 @@ a {
 #header .header-nav .social #虾米音乐 {
   background: url("/img/虾米音乐.png") center no-repeat #ff6a00;
 }
+#header .header-nav .social .gitosc:before {
+  content: '\f18a';
+  color: transparent;
+}
+#header .header-nav .social #gitosc {
+  background: url("/img/gitosc.png") center no-repeat #fff;
+}
 #header .header-nav .social .RSS:before {
   content: '\f09e';
 }
