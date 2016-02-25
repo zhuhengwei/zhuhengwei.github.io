@@ -7,29 +7,22 @@
     </url>
     
     <url>
-        <loc>http://zhuhengwei.com//404.html</loc>
-        <lastmod>2016-02-21T13:42:17.865Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
-        <loc>http://zhuhengwei.com/sitemap/index.html</loc>
-        <lastmod>2016-02-21T13:18:18.216Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
         <loc>http://zhuhengwei.com/tags/index.html</loc>
-        <lastmod>2016-02-20T14:19:11.243Z</lastmod>
+        <lastmod>2016-02-22T07:40:08.575Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>http://zhuhengwei.com//404.html</loc>
+        <lastmod>2016-02-22T07:39:37.347Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     
     <url>
         <loc>http://zhuhengwei.com/about/index.html</loc>
-        <lastmod>2016-02-20T14:18:06.101Z</lastmod>
+        <lastmod>2016-02-22T02:19:20.061Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>

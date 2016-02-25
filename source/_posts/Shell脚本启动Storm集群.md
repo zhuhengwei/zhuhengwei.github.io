@@ -6,7 +6,6 @@ tags: [shell,大数据,storm,集群]
 ---
 
 最近因为学习需要，搭建了storm集群，装了比较旧的版本storm-0.8.1,也安装了ZMQ，中间安装过程之曲折不属本文范围，以后再整理。本文先把storm集群启动的脚本放出,其中包含了启动zookeeper。其他集群，spark，hadoop启动、停止脚本可参考本脚本。代码不完善之处依照具体业务修改。
-
 ##### 启动之前的准备工作
 1）机器配置,ip-机器名 在hosts中配置好
 2）配置各节点storm 的STORM_HOME和ZOOKEEPER_HOME

@@ -8,6 +8,7 @@ subtitle:  学海无涯，孜孜以求
 description:  个人站点，记录生活学习点滴
 author:  朱恒伟
 language:  zh-CN
+startdate:  2015
 timezone:
 
 # URL
@@ -44,7 +45,7 @@ highlight:
   tab_replace:
 
 # Category & Tag
-default_category: categorized
+default_category: uncategorized
 category_map:
 tag_map:
 

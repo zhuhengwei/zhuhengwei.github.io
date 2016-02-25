@@ -587,6 +587,9 @@ a {
   #container #header .social li:nth-child(5n) {
     margin-right: 3px;
   }
+  #container .github-text {
+    display: none;
+  }
 }
 .header-author {
   text-align: center;
@@ -1098,6 +1101,9 @@ color
 }
 .post-list li:hover a {
   color: #88acdb;
+}
+.article-entry .github-widget h3::after {
+  content: none;
 }
 .archives-wrap {
   position: relative;
