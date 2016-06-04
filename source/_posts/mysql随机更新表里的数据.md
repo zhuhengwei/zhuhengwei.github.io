@@ -1,7 +1,7 @@
 ---
 title: mysql随机更新表里的数据
 date: 2015-07-10 20:55:45
-categories: [数据库管理]
+categories: [MySQL]
 tags: [mysql,随机]
 ---
 

@@ -1,13 +1,13 @@
 ---
 title: mysql批量备份多表
 date: 2015-07-04 14:26:45
-categories: [数据库管理]
-tags: [shell,mysql, 脚本,备份]
+categories: [MySQL]
+tags: [shell,mysql,备份]
 ---
 
 ### 1. 批量备份 mysql 多表，每个表一个.sql ###
 对于每天生成的表，需要把以前的表备份，即定义起始的表和结束的表，针对有规律的表的备份。
-
+<!-- more -->
 ```bash
 	#!/bin/bash
 	IPAddress=8.8.8.8

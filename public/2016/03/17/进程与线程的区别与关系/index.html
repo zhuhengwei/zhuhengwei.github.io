@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>进程与线程的区别与关系 | 刻剑求舟</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="定义进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动，是个动态的概念，区别于程序，程序就是一块代码，是一个静态的概念，进程是系统进行资源分配的基本单位。线程，是进程的一部分，线程有时又被称为轻权进程或轻量级进程，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程与线程的区别与关系">
+<meta property="og:url" content="http://zhuhengwei.com/2016/03/17/进程与线程的区别与关系/index.html">
+<meta property="og:site_name" content="刻剑求舟">
+<meta property="og:description" content="定义进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动，是个动态的概念，区别于程序，程序就是一块代码，是一个静态的概念，进程是系统进行资源分配的基本单位。线程，是进程的一部分，线程有时又被称为轻权进程或轻量级进程，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。">
+<meta property="og:updated_time" content="2016-04-19T10:59:48.732Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="进程与线程的区别与关系">
+<meta name="twitter:description" content="定义进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动，是个动态的概念，区别于程序，程序就是一块代码，是一个静态的概念，进程是系统进行资源分配的基本单位。线程，是进程的一部分，线程有时又被称为轻权进程或轻量级进程，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。">
+  
+    <link rel="alternative" href="/atom.xml" title="刻剑求舟" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" type="text/css">
+  
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+  
+      <script>
+          var _hmt = _hmt || [];
+          (function() {
+              var hm = document.createElement("script");
+              hm.src = "//hm.baidu.com/hm.js?c41ceccb6d9b473745d3fb3c5a87499c";
+              var s = document.getElementsByTagName("script")[0]; 
+              s.parentNode.insertBefore(hm, s);
+          })();
+      </script>
+  
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/avatar.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/">朱恒伟</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">学海无涯，孜孜以求</p>
+        
+                
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <li id="GitHub"><a class="GitHub" target="_blank" href="https://github.com/zhuhengwei" title="GitHub"></a></li>
+                            
+                                <li id="gitosc"><a class="gitosc" target="_blank" href="http://git.oschina.net/zhuhengwei" title="gitosc"></a></li>
+                            
+                                <li id="新浪微博"><a class="新浪微博" target="_blank" href="http://weibo.com/hengweizhu" title="新浪微博"></a></li>
+                            
+                                <li id="知乎"><a class="知乎" target="_blank" href="https://www.zhihu.com/people/zhuhengwei" title="知乎"></a></li>
+                            
+                                <li id="Email"><a class="Email" target="_blank" href="mailto:zhuhengwei@zhuhengwei.com" title="Email"></a></li>
+                            
+                                <li id="RSS"><a class="RSS" target="_blank" href="/atom.xml" title="RSS"></a></li>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/IP/" style="font-size: 10px;">IP</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/mysql/" style="font-size: 20px;">mysql</a> <a href="/tags/shell/" style="font-size: 20px;">shell</a> <a href="/tags/storm/" style="font-size: 10px;">storm</a> <a href="/tags/中文/" style="font-size: 10px;">中文</a> <a href="/tags/域名/" style="font-size: 10px;">域名</a> <a href="/tags/备份/" style="font-size: 10px;">备份</a> <a href="/tags/复杂类型/" style="font-size: 10px;">复杂类型</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/比较器/" style="font-size: 10px;">比较器</a> <a href="/tags/空文件夹/" style="font-size: 10px;">空文件夹</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/随机/" style="font-size: 10px;">随机</a> <a href="/tags/集群/" style="font-size: 10px;">集群</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://baidu.com/">Baidu</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">学海无涯，孜孜以求</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">朱恒伟</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/avatar.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">朱恒伟</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">学海无涯，孜孜以求</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <li id="GitHub"><a class="GitHub" target="_blank" href="https://github.com/zhuhengwei" title="GitHub"></a></li>
+                            
+                                <li id="gitosc"><a class="gitosc" target="_blank" href="http://git.oschina.net/zhuhengwei" title="gitosc"></a></li>
+                            
+                                <li id="新浪微博"><a class="新浪微博" target="_blank" href="http://weibo.com/hengweizhu" title="新浪微博"></a></li>
+                            
+                                <li id="知乎"><a class="知乎" target="_blank" href="https://www.zhihu.com/people/zhuhengwei" title="知乎"></a></li>
+                            
+                                <li id="Email"><a class="Email" target="_blank" href="mailto:zhuhengwei@zhuhengwei.com" title="Email"></a></li>
+                            
+                                <li id="RSS"><a class="RSS" target="_blank" href="/atom.xml" title="RSS"></a></li>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-进程与线程的区别与关系" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/03/17/进程与线程的区别与关系/" class="article-date">
+      <time datetime="2016-03-17T13:14:02.000Z" itemprop="datePublished">2016-03-17</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      进程与线程的区别与关系
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/操作系统/">操作系统</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/线程/">线程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/进程/">进程</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p><strong>进程</strong>是具有一定独立功能的程序关于某个数据集合上的一次运行活动，是个动态的概念，区别于程序，程序就是一块代码，是一个静态的概念，<strong>进程是系统进行资源分配的基本单位</strong>。<br><strong>线程</strong>，是进程的一部分，线程有时又被称为轻权进程或<strong>轻量级进程，是CPU调度和分派的基本单位</strong>，它是比进程更小的能独立运行的基本单位。<br><a id="more"></a></p>
+<h3 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h3><p>线程是进程的一部分，一个线程可以创建和撤销另一个线程。同一个进程中的多个线程之间可以并发执行。线程可与同属一个进程的其他的线程共享进程所拥有的全部资源，但拥有自己的栈空间，拥有独立的执行序列。线程自己基本上不拥有系统资源，只拥有在运行中必不可少的资源(程序计数器，寄存器和栈)。</p>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><p>进程和线程的主要差别在于<font color="red"><strong>不同的资源管理方式</strong></font>。进程有独立的地址空间，一个进程崩溃后，不会对其它进程产生影响，而线程只是一个进程中的不同执行路径。线程有自己的堆栈和局部变量，但线程之间没有单独的地址空间，一个线程死掉就等于整个进程死掉，所以多进程的程序要比多线程的程序健壮，并发编程中的异常处理就变得特别重要。<br>1)一个程序至少有一个进程，一个进程至少有一个线程(没有线程的进程可以被看作是单线程的)<br>2)大小。线程的划分尺度小于进程，使得多线程程序的并发性高。<br>3)内存。进程在执行过程中拥有独立的内存单元，而<strong>多个线程共享内存</strong>，从而极大地提高了程序的运行效率。<br>4)执行过程。每个独立的线程有一个程序运行的入口、顺序执行序列和程序的出口。但是线程不能够独立执行，必须依存在应用程序中，由应用程序提供多个线程执行控制。<br>5)多线程的意义在于一个应用程序中有多个执行部分可以同时执行，但操作系统并没有将多个线程看做多个独立的应用来实现进程的调度和管理以及资源分配。这就是进程和线程的重要区别。</p>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><p>1)线程执行开销小，<strong>上下文切换快且消耗小</strong>。线程的创建和结束所需要的系统开销也比进程的创建和结束要小得多<br>2)进程拥有运行时所有的资源，而线程基本上不拥有系统资源，因此进程可以进行<strong>跨机器迁移</strong>，线程不利于资源的管理和保护，线程共享资源时需要考虑<font color="red"><strong>线程安全</strong></font></p>
+<h3 id="为什么需要线程"><a href="#为什么需要线程" class="headerlink" title="为什么需要线程"></a>为什么需要线程</h3><p>在网络或多用户环境下，Web服务器需要接收大量的并发请求，为每一个请求都创建一个进程显然是不行的，进程是相当重量级的，太多进程会很快让机器吃不消，问题不在于机器不够强大或者网络不好，而是实现的太差。Http连接是短暂的，资源一般很小，不会像Ftp保持数分钟或者几小时，所以早期的web性能问题不明显，但是随着使用量的增长，高流量的web服务器性能会下降。<br>有两种常见的解决方案：<br>1)<font color="red"><strong>重用进程</strong></font>。不是为每个请求新建一个进程，而是在服务器启动时，创建固定数量的进程，当一个请求到达时放入队列，进程从队列中取出请求处理，同时删除队列中的请求，处理完成之后继续从队列中取出请求进行服务。好处是避免了建立和销毁进程所用的开销<br>2)<font color="red"><strong>更轻量的线程</strong></font>。因为线程的以上优点，所以线程是个很好的选择，同时再利用线程池，可以提供很好的性能。</p>
+<h3 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h3><p>多线程访问同一代码和单线程访问时中间变量以及结果相同，不会产生不确定的结果叫做<strong>线程安全</strong>。原因是，不同线程共享相同的内存，一个线程可能会破坏另一个线程使用的变量和数据结构。线程安全问题是由全局变量及静态变量引起的。若每个线程中对全局变量、静态变量只有读操作而无写操作，这个全局变量是线程安全的。若有多个线程同时执行写操作，一般都需要考虑线程同步，否则的话就可能影响线程安全。<br>在Java里同步的几种方法:<strong>synchronized(同步代码块/对象/方法)， volatile，锁(lock)</strong>等。利用了锁机制来实现对共享资源的互斥访问，在操作系统层面就是<font color="red"><strong>信号量</strong></font>。</p>
+<p>本文重在进程与线程的区别，进程状态转换、线程同步问题以后总结。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/03/17/进程与线程的区别与关系/">进程与线程的区别与关系</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 朱恒伟 的个人博客">朱恒伟</a></p>
+        <p><span>发布时间:</span>2016年03月17日 - 21时14分</p>
+        <p><span>最后更新:</span>2016年04月19日 - 18时59分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/03/17/进程与线程的区别与关系/" title="进程与线程的区别与关系">http://zhuhengwei.com/2016/03/17/进程与线程的区别与关系/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://zhuhengwei.com/2016/03/17/进程与线程的区别与关系/　　作者: 朱恒伟" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/02/27/Java自定义比较器实现中文排序/">
+                    Java自定义比较器实现中文排序
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义"><span class="toc-number">1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关系"><span class="toc-number">2.</span> <span class="toc-text">关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#区别"><span class="toc-number">3.</span> <span class="toc-text">区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优缺点"><span class="toc-number">4.</span> <span class="toc-text">优缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么需要线程"><span class="toc-number">5.</span> <span class="toc-text">为什么需要线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程安全"><span class="toc-number">6.</span> <span class="toc-text">线程安全</span></a></li></ol>
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+
+
+
+    <div class="share">
+    <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+    <a href="#" class="bds_copy" data-cmd="copy" title="复制网址"></a>
+    <a href="#" class="bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+    </div>
+    <script>
+        window._bd_share_config={
+            "common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+</div>
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2016/03/17/进程与线程的区别与关系/" data-title="进程与线程的区别与关系" data-url="http://zhuhengwei.com/2016/03/17/进程与线程的区别与关系/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhuhengwei"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/02/27/Java自定义比较器实现中文排序/" title="下一篇: Java自定义比较器实现中文排序">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/03/17/进程与线程的区别与关系/">进程与线程的区别与关系</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/27/Java自定义比较器实现中文排序/">Java自定义比较器实现中文排序</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/01/27/Redis存储复杂类型的思考/">Redis存储复杂类型的思考</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/12/06/Shell脚本启动Storm集群/">Shell脚本启动Storm集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/07/10/mysql随机更新表里的数据/">mysql随机更新表里的数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/07/04/mysql批量备份多表/">mysql批量备份多表</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/12/02/域名绑定本机Tomcat项目/">域名绑定本机Tomcat项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2014/11/24/Git管理空文件夹/">Git管理空文件夹</a></li></ul>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#toc, .switch-btn, .switch-area").toggle();
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+                $(".switch-btn, .switch-area").fadeToggle(300);
+            }
+        })
+    </script>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2015-2016
+		<a href="http://weibo.com/hengweizhu" target="_blank" title="@朱恒伟 的微博"> 朱恒伟</a>
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的静态博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减双栏 Hexo 博客主题">Yelee</a>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >本站到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+    <style>
+        body {
+          background: lightgray;
+        }
+        #container .left-col {
+          background: white;
+        }
+        .article-inner {
+          background: white;
+          margin-bottom: 1em;
+        }
+        .post-nav-button {
+          background: #ececec;
+        }
+        #header .header-nav .social #GitHub {
+          background-color: #bfd3ec;
+        }
+        #post-nav-button a {
+          background: rgba(215, 216, 215, .2);
+        }
+        .post-list {
+          background: white;
+        }
+    </style>
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

@@ -7,6 +7,27 @@
     </url>
     
     <url>
+        <loc>http://zhuhengwei.com/README.html</loc>
+        <lastmod>2016-04-19T10:58:57.790Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>http://zhuhengwei.com/resume/index.html</loc>
+        <lastmod>2016-03-02T10:27:41.972Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>http://zhuhengwei.com/about/index.html</loc>
+        <lastmod>2016-03-02T10:27:27.564Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
         <loc>http://zhuhengwei.com/tags/index.html</loc>
         <lastmod>2016-02-22T07:40:08.575Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -16,13 +37,6 @@
     <url>
         <loc>http://zhuhengwei.com//404.html</loc>
         <lastmod>2016-02-22T07:39:37.347Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
-        <loc>http://zhuhengwei.com/about/index.html</loc>
-        <lastmod>2016-02-22T02:19:20.061Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>

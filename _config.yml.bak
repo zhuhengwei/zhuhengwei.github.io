@@ -8,8 +8,8 @@ subtitle:  学海无涯，孜孜以求
 description:  个人站点，记录生活学习点滴
 author:  朱恒伟
 language:  zh-CN
-startdate:  2015
 timezone:
+
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
@@ -26,7 +26,7 @@ archive_dir: archives
 category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
-skip_render:
+skip_render: README.md
 
 # Writing
 new_post_name: :title.md # File name of new posts
@@ -86,3 +86,4 @@ deploy:
   type:  git
   repository:  https://github.com/zhuhengwei/zhuhengwei.github.io.git
   branch:  master
+  message:  修改简历
