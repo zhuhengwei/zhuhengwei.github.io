@@ -1,0 +1,280 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>进程与线程的区别与关系 | 刻剑求舟</title>
+  <meta name="author" content="朱恒伟">
+  
+  <meta name="description" content="个人站点，记录生活学习点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="进程与线程的区别与关系">
+  <meta property="og:site_name" content="刻剑求舟">
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/themes/bootstrap.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight-default.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/comment.css" media="screen" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+  
+  <!-- analytics -->
+  
+
+
+
+</head>
+</html>
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <a class="navbar-brand" href="/">刻剑求舟</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class="fa fa-folder"></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header page-header-inverse ">		
+			<h1 class="title title-inverse "> 进程与线程的区别与关系</h1>
+		</div>		
+	
+
+
+
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p><strong>进程</strong>是具有一定独立功能的程序关于某个数据集合上的一次运行活动，是个动态的概念，区别于程序，程序就是一块代码，是一个静态的概念，<strong>进程是系统进行资源分配的基本单位</strong>。<br><strong>线程</strong>，是进程的一部分，线程有时又被称为轻权进程或<strong>轻量级进程，是CPU调度和分派的基本单位</strong>，它是比进程更小的能独立运行的基本单位。<br><a id="more"></a></p>
+<h3 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h3><p>线程是进程的一部分，一个线程可以创建和撤销另一个线程。同一个进程中的多个线程之间可以并发执行。线程可与同属一个进程的其他的线程共享进程所拥有的全部资源，但拥有自己的栈空间，拥有独立的执行序列。线程自己基本上不拥有系统资源，只拥有在运行中必不可少的资源(程序计数器，寄存器和栈)。</p>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><p>进程和线程的主要差别在于<font color="red"><strong>不同的资源管理方式</strong></font>。进程有独立的地址空间，一个进程崩溃后，不会对其它进程产生影响，而线程只是一个进程中的不同执行路径。线程有自己的堆栈和局部变量，但线程之间没有单独的地址空间，一个线程死掉就等于整个进程死掉，所以多进程的程序要比多线程的程序健壮，并发编程中的异常处理就变得特别重要。<br>1)一个程序至少有一个进程，一个进程至少有一个线程(没有线程的进程可以被看作是单线程的)<br>2)大小。线程的划分尺度小于进程，使得多线程程序的并发性高。<br>3)内存。进程在执行过程中拥有独立的内存单元，而<strong>多个线程共享内存</strong>，从而极大地提高了程序的运行效率。<br>4)执行过程。每个独立的线程有一个程序运行的入口、顺序执行序列和程序的出口。但是线程不能够独立执行，必须依存在应用程序中，由应用程序提供多个线程执行控制。<br>5)多线程的意义在于一个应用程序中有多个执行部分可以同时执行，但操作系统并没有将多个线程看做多个独立的应用来实现进程的调度和管理以及资源分配。这就是进程和线程的重要区别。</p>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><p>1)线程执行开销小，<strong>上下文切换快且消耗小</strong>。线程的创建和结束所需要的系统开销也比进程的创建和结束要小得多<br>2)进程拥有运行时所有的资源，而线程基本上不拥有系统资源，因此进程可以进行<strong>跨机器迁移</strong>，线程不利于资源的管理和保护，线程共享资源时需要考虑<font color="red"><strong>线程安全</strong></font></p>
+<h3 id="为什么需要线程"><a href="#为什么需要线程" class="headerlink" title="为什么需要线程"></a>为什么需要线程</h3><p>在网络或多用户环境下，Web服务器需要接收大量的并发请求，为每一个请求都创建一个进程显然是不行的，进程是相当重量级的，太多进程会很快让机器吃不消，问题不在于机器不够强大或者网络不好，而是实现的太差。Http连接是短暂的，资源一般很小，不会像Ftp保持数分钟或者几小时，所以早期的web性能问题不明显，但是随着使用量的增长，高流量的web服务器性能会下降。<br>有两种常见的解决方案：<br>1)<font color="red"><strong>重用进程</strong></font>。不是为每个请求新建一个进程，而是在服务器启动时，创建固定数量的进程，当一个请求到达时放入队列，进程从队列中取出请求处理，同时删除队列中的请求，处理完成之后继续从队列中取出请求进行服务。好处是避免了建立和销毁进程所用的开销<br>2)<font color="red"><strong>更轻量的线程</strong></font>。因为线程的以上优点，所以线程是个很好的选择，同时再利用线程池，可以提供很好的性能。</p>
+<h3 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h3><p>多线程访问同一代码和单线程访问时中间变量以及结果相同，不会产生不确定的结果叫做<strong>线程安全</strong>。原因是，不同线程共享相同的内存，一个线程可能会破坏另一个线程使用的变量和数据结构。线程安全问题是由全局变量及静态变量引起的。若每个线程中对全局变量、静态变量只有读操作而无写操作，这个全局变量是线程安全的。若有多个线程同时执行写操作，一般都需要考虑线程同步，否则的话就可能影响线程安全。<br>在Java里同步的几种方法:<strong>synchronized(同步代码块/对象/方法)， volatile，锁(lock)</strong>等。利用了锁机制来实现对共享资源的互斥访问，在操作系统层面就是<font color="red"><strong>信号量</strong></font>。</p>
+<p>本文重在进程与线程的区别，进程状态转换、线程同步问题以后总结。</p>
+	  
+	</div>
+
+	<!-- recommended posts -->
+	
+
+	<div>
+  	<center>
+	<div class="pagination">
+<ul class="pagination">
+	 
+				
+    	<li class="prev"><a href="/2018/01/04/binlog复制的三种模式/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>上一页</a></li>
+  		
+
+        <li><a href="/archives"><i class="fa fa-archive"></i>Archive</a></li>
+
+		
+		   <li class="next"><a href="/2016/02/27/Java自定义比较器实现中文排序/" class="alignright next">下一页<i class="fa fa-arrow-circle-o-right"></i></a></li>         
+        
+	
+</ul>
+</div>
+
+    </center>
+	</div>
+
+    <!-- share -->
+    
+        
+    <div class="bdsharebuttonbox">
+        <a href="#" class="bds_more" data-cmd="more"></a>
+        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+        <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+        <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+        <a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+        <a href="#" class="bds_evernotecn" data-cmd="evernotecn" title="分享到印象笔记"></a>
+        <a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+        <a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+    </div>
+    <script>
+        window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+
+
+        
+
+    
+	
+	<!-- comment -->
+	
+<section id="comment">
+  <h2 class="title">留言</h2>
+  
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2016-03-17 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    </li><li><a href="/categories/操作系统/">操作系统<span>2</span></a></li>
+  
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/进程/">进程<span>1</span></a></li> <li><a href="/tags/线程/">线程<span>1</span></a></li>
+    </ul>
+	</div>
+	
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2019 朱恒伟
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+</p> </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<!-- syntax highlighting -->
+
+
+</body>
+   </html>

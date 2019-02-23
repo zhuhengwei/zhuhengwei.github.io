@@ -1,0 +1,443 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Spring Boot缓存之Caffeine | 刻剑求舟</title>
+  <meta name="author" content="朱恒伟">
+  
+  <meta name="description" content="个人站点，记录生活学习点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Spring Boot缓存之Caffeine">
+  <meta property="og:site_name" content="刻剑求舟">
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/themes/bootstrap.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight-default.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/comment.css" media="screen" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+  
+  <!-- analytics -->
+  
+
+
+
+</head>
+</html>
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <a class="navbar-brand" href="/">刻剑求舟</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class="fa fa-folder"></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header page-header-inverse ">		
+			<h1 class="title title-inverse "> Spring Boot缓存之Caffeine</h1>
+		</div>		
+	
+
+
+
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h2 id="什么是缓存"><a href="#什么是缓存" class="headerlink" title="什么是缓存"></a>什么是缓存</h2><p>缓存就是将程序或系统频繁使用的<strong>对象保存在内存</strong>中，便于使用时可以快速调用，不必再去创建新的重复的实例或者重复调用接口。可以显著减少系统开销，提高系统效率。<br><a id="more"></a></p>
+<h2 id="缓存分类和应用场景"><a href="#缓存分类和应用场景" class="headerlink" title="缓存分类和应用场景"></a>缓存分类和应用场景</h2><p>缓存有各类特征，在目前的应用服务框架中，比较常见根据缓存与应用的耦合度，分为<strong>local cache（本地缓存）和remote cache（分布式缓存）</strong>：</p>
+<p><strong>本地缓存</strong>：指的是<strong>在应用中的缓存组件</strong>，其最大的优点是应用和cache是在同一个应用内部，请求缓存非常快速，没有额外网络开销等，在单应用不需要集群支持或者集群情况下各节点无需互相通知的场景下使用本地缓存较合适；同时，它的缺点也是因为缓存跟应用程序耦合，多个应用程序无法直接的共享缓存，各应用或集群的各节点都需要维护自己的单独缓存，对内存是一种浪费。</p>
+<p><strong>分布式缓存</strong>：指的是<strong>与应用分离的缓存组件或服务</strong>，其最大的优点是自身就是一个独立的应用，与本地应用隔离，多个应用可直接的共享缓存。缺点,也是因为独立,与应用分离,存在第三方依赖风险.</p>
+<p>目前各种类型的缓存活跃在成千上万的服务中，还没有一种缓存方案可以解决一切的业务场景或数据类型，需要根据自身的特殊场景和背景，选择最适合的缓存方案。准确判断使用何种类型的缓存，以最小的成本最快的效率达到最优的目的。</p>
+<h2 id="为什么要有本地缓存"><a href="#为什么要有本地缓存" class="headerlink" title="为什么要有本地缓存"></a>为什么要有本地缓存</h2><p>在系统中有些数据，数据量小，但是访问十分频繁（例如城市/bu/等一些数据字典），针对这种场景，需要将数据放到应用的本地缓存中，以提升系统的访问效率，减少无谓的数据库访问（数据库访问占用数据库连接，同时网络消耗比较大），但是有一点需要注意，就是缓存的占用空间以及缓存的失效策略。</p>
+<p>很多情况下的数据，大多是业务无关的,且分布式缓存的构建/集群维护成本比较高，使用本地缓存足矣。</p>
+<h2 id="Caffeine介绍"><a href="#Caffeine介绍" class="headerlink" title="Caffeine介绍"></a>Caffeine介绍</h2><p>Caffeine是一种高性能,近似最优命中的本地缓存,简单点说类似于自己实现的ConcurrentHashMap,是使用## Java8基于Guava和ConcurrentLinkedHashMap的本地缓存 ##,既然是重写,性能必须吊打Guava(对比参考&lt;&lt;你应该知道的Java缓存进化史&gt;&gt;)，且在<strong>Spring Boot 2.0(spring 5)</strong>中已取代Guava,那么我们就没有理由怀疑Caffeine的性能了。Guava Cache 的功能的确是很强大，满足了绝大多数人的需求，但是其本质上还是 LRU 的一层封装，所以在众多其他较为优良的淘汰算法中就相形见绌了。而 Caffeine Cache 实现了 <strong>W-TinyLFU(LFU+LRU 算法的变种)</strong>。</p>
+<p>具体原理可以参考官网,github地址<a href="https://github.com/ben-manes/caffeine" target="_blank" rel="noopener">https://github.com/ben-manes/caffeine</a></p>
+<h2 id="Spring-Boot自动配置Caffeine"><a href="#Spring-Boot自动配置Caffeine" class="headerlink" title="Spring Boot自动配置Caffeine"></a>Spring Boot自动配置Caffeine</h2><p>spring boot的自动配置无比强大,能不写的代码一点也不用写.</p>
+<p>Caffeine在Spring Boot 2.0中取代Guava。如果出现Caffeine，CaffeineCacheManager(由spring-boot-starter-cache提供)将会自动配置。使用spring.cache.cache-names属性可以在启动时创建缓存，并可以通过以下配置进行自定义（按顺序）：</p>
+<pre><code>spring.cache.caffeine.spec： ##缓存的自定义参数
+com.github.benmanes.caffeine.cache.CaffeineSpec： ##bean定义
+com.github.benmanes.caffeine.cache.Caffeine： ##bean定义
+</code></pre><p>例如，以下配置创建一个cache1和cache2缓存，最大数量为500，存活时间为10分钟：</p>
+<pre><code>spring.cache.cache-names=cache1,cache2
+spring.cache.caffeine.spec=maximumSize=500,expireAfterAccess=600s
+</code></pre><p>如果定义了com.github.benmanes.caffeine.cache.CacheLoader，它会自动关联到CaffeineCacheManager。由于该CacheLoader将关联被该缓存管理器管理的所有缓存，所以必须定义为CacheLoader&lt;Object, Object&gt;，自动配置将忽略所有泛型类型。</p>
+<h2 id="Spring-boot中如何使用"><a href="#Spring-boot中如何使用" class="headerlink" title="Spring boot中如何使用"></a>Spring boot中如何使用</h2><h3 id="1-引入依赖包"><a href="#1-引入依赖包" class="headerlink" title="1.引入依赖包"></a>1.引入依赖包</h3><p>无需指定版本,starter已包含版本定义</p>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-cache&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.github.ben-manes.caffeine&lt;/groupId&gt;
+    &lt;artifactId&gt;caffeine&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre><h3 id="2-添加注解-开启缓存支持"><a href="#2-添加注解-开启缓存支持" class="headerlink" title="2.添加注解,开启缓存支持"></a>2.添加注解,开启缓存支持</h3><p>启动类上添加@EnableCaching注解</p>
+<pre><code>@SpringBootApplication
+@EnableCaching
+public class MyWebApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyWebApplication.class, args);
+    }
+}
+</code></pre><h3 id="3-配置文件"><a href="#3-配置文件" class="headerlink" title="3.配置文件"></a>3.配置文件</h3><p>用配置文件可以对所有缓存进行配置,一般情况已足够,这种方法配置简单，但是灵活性不高，对设置的cache(cache name)所有的规则都是一样的,如对单个缓存有配置需求,需自定义配置类Caffeine或者CaffeineSpec</p>
+<p>properties文件</p>
+<pre><code>spring.cache.cache-names=cache1
+spring.cache.caffeine.spec=initialCapacity=50,maximumSize=500,expireAfterWrite=10s
+</code></pre><p>或Yaml文件</p>
+<pre><code>spring:
+  cache:
+    type: caffeine
+    cache-names:
+    - city
+    caffeine:
+      spec: maximumSize=1024,expireAfterWrite=2h
+</code></pre><p>如果使用refreshAfterWrite配置,必须指定一个CacheLoader.不用该配置则无需这个bean,如上所述,该CacheLoader将关联被该缓存管理器管理的所有缓存，所以必须定义为CacheLoader&lt;Object, Object&gt;，自动配置将忽略所有泛型类型。</p>
+<pre><code>/**
+ * 必须要指定这个Bean，refreshAfterWrite=2h属性才生效
+ * @return
+ */
+@Bean
+public CacheLoader&lt;Object, Object&gt; cacheLoader() {
+    CacheLoader&lt;Object, Object&gt; cacheLoader = new CacheLoader&lt;Object, Object&gt;() {
+        @Override
+        public Object load(Object key) throws Exception {
+            return null;
+        }
+
+        // 重写这个方法将oldValue值返回回去，进而刷新缓存
+        @Override
+        public Object reload(Object key, Object oldValue) throws Exception {
+            return oldValue;
+        }
+    };
+    return cacheLoader;
+}
+</code></pre><p>Caffeine常用配置说明：</p>
+<p>initialCapacity=[integer]: 初始的缓存空间大小</p>
+<p>maximumSize=[long]: 缓存的最大条数</p>
+<p>maximumWeight=[long]: 缓存的最大权重</p>
+<p>expireAfterAccess=[duration]: 最后一次写入或访问后经过固定时间过期</p>
+<p>expireAfterWrite=[duration]: 最后一次写入后经过固定时间过期</p>
+<p>refreshAfterWrite=[duration]: 创建缓存或者最近一次更新缓存后经过固定的时间间隔，刷新缓存</p>
+<p>weakKeys: 打开key的弱引用</p>
+<p>weakValues：打开value的弱引用</p>
+<p>softValues：打开value的软引用</p>
+<p>recordStats：开发统计功能</p>
+<p>注意：</p>
+<p>expireAfterWrite和expireAfterAccess同时存在时，以expireAfterWrite为准。</p>
+<p>maximumSize和maximumWeight不可以同时使用</p>
+<p>weakValues和softValues不可以同时使用</p>
+<h3 id="4-代码中注解"><a href="#4-代码中注解" class="headerlink" title="4.代码中注解"></a>4.代码中注解</h3><p>在需要的方法上添加注解,@Cacheable注解value为缓存的名称,需在配置文件中定义,必须指定至少一个； key：缓存的 key可以为空，如果指定要按照 SpEL 表达式编写，如果不指定，则默认按照方法的所有参数进行组合；</p>
+<p>此处要注意,spring 用AOP方式实现缓存,因此在同一个类中调用方法,是不生效的.</p>
+<pre><code>@Cacheable(value = &quot;city&quot;)
+public String getCityName(int cityId) {
+    String cityName = &quot;&quot;;
+    ....
+    return cityName;
+}
+</code></pre><h2 id="延伸"><a href="#延伸" class="headerlink" title="延伸"></a>延伸</h2><h3 id="Spring注解缓存"><a href="#Spring注解缓存" class="headerlink" title="Spring注解缓存"></a>Spring注解缓存</h3><p>事实上,Spring cache不是Spring boot 才有的,只是boot提供的强大的自动配置能力进一步简化了cache的使用.</p>
+<p>Spring 3.1之后，引入了注解缓存，其本质上不是一个具体的缓存实现方案，而是一个对缓存使用的抽象，通过在既有代码中添加少量自定义的annotation注解，就能够达到使用缓存对象和缓存方法的返回对象的效果。Spring的缓存技术具备相当的灵活性，不仅能够使用SpEL（Spring Expression Language）来定义缓存的key和各种condition，还提供开箱即用的缓存临时存储方案(SIMPLE)，也支持和主流的专业缓存集成(REDIS等)。其特点总结如下：</p>
+<p>少量的配置annotation注释即可使得既有代码支持缓存；</p>
+<p>支持开箱即用，不用安装和部署额外的第三方组件即可使用缓存；</p>
+<p>支持Spring Express Language（SpEL），能使用对象的任何属性或者方法来定义缓存的key和使用规则条件；</p>
+<p>支持自定义key和自定义缓存管理者，具有相当的灵活性和可扩展性。</p>
+<p>和Spring的事务管理类似，Spring Cache的关键原理就是Spring AOP，通过Spring AOP实现了在方法调用前、调用后获取方法的入参和返回值，进而实现了缓存的逻辑。</p>
+<p>注解驱动的Spring Cache能够极大的减少编写常见缓存的代码量，通过少量的注释标签和配置文件，即可达到使代码具备缓存的能力，且具备很好的灵活性和扩展性。但是Spring Cache由于基于Spring AOP 动态的proxy技术，导致其不能很好的支持方法的内部调用或者非public方法的缓存设置。</p>
+<h3 id="不同注解区别"><a href="#不同注解区别" class="headerlink" title="不同注解区别"></a>不同注解区别</h3><p>@Cacheable/@CachePut/@CacheEvict</p>
+<p>Spring boot支持以下缓存的自动配置</p>
+<p>主要包含EHCACHE,REDIS,CAFFEINE,SIMPLE(也就是ConcurrentHashMap)</p>
+<p>guava已经被CAFFEINE替代</p>
+<pre><code>/**
+ * Supported cache types (defined in order of precedence).
+ * @since 1.3.0
+ */
+public enum CacheType {
+    /**
+     * Generic caching using &apos;Cache&apos; beans from the context.
+     */
+    GENERIC,
+
+    /**
+     * JCache (JSR-107) backed caching.
+     */
+    JCACHE,
+
+    /**
+     * EhCache backed caching.
+     */
+    EHCACHE,
+
+    /**
+     * Hazelcast backed caching.
+     */
+    HAZELCAST,
+
+    /**
+     * Infinispan backed caching.
+     */
+    INFINISPAN,
+
+    /**
+     * Couchbase backed caching.
+     */
+    COUCHBASE,
+
+    /**
+     * Redis backed caching.
+     */
+
+    REDIS,
+
+    /**
+     * Caffeine backed caching.
+     */
+    CAFFEINE,
+
+    /**
+     * Simple in-memory caching.
+     */
+
+    SIMPLE,
+
+    /**
+     * No caching.
+     */
+    NONE
+}
+</code></pre><p>Spring boot默认缓存实现</p>
+<blockquote>
+<p>If you do not add any specific cache library, Spring Boot auto-configures a simple provider that uses concurrent maps in memory. When a cache is required (such as piDecimals in the preceding example), this provider creates it for you. The simple provider is not really recommended for production usage, but it is great for getting started and making sure that you understand the features.</p>
+</blockquote>
+<p>如果项目中开启了缓存,但是没有指定特定的缓存库,BOOT会自动配置一个SIMPLE的本地缓存,也就是<strong>以ConcurrentHashMap实现的缓存</strong>.不过不建议在生产使用.</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>Caffeine官网github地址<a href="https://github.com/ben-manes/caffeine" target="_blank" rel="noopener">https://github.com/ben-manes/caffeine</a></p>
+<p>spring官网cache特性<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-caching.html" target="_blank" rel="noopener">https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-caching.html</a></p>
+<p>Spring Cache的抽象解释与注解 <a href="https://docs.spring.io/spring/docs/5.1.3.RELEASE/spring-framework-reference/integration.html#cache" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/5.1.3.RELEASE/spring-framework-reference/integration.html#cache</a></p>
+<p>&lt;&lt;你应该知道的Java缓存进化史&gt;&gt;  <a href="https://mp.weixin.qq.com/s/DV5eSZtShs2twGe0UwzPuA" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/DV5eSZtShs2twGe0UwzPuA</a>&lt;&lt;缓存那些事&gt;&gt; <a href="https://tech.meituan.com/cache_about.html" target="_blank" rel="noopener">https://tech.meituan.com/cache_about.html</a></p>
+<p><a href="https://blog.csdn.net/xiaolyuh123/article/details/78794119" target="_blank" rel="noopener">https://blog.csdn.net/xiaolyuh123/article/details/78794119</a></p>
+	  
+	</div>
+
+	<!-- recommended posts -->
+	
+
+	<div>
+  	<center>
+	<div class="pagination">
+<ul class="pagination">
+	 
+				
+    	<li class="prev"><a href="/2019/01/10/base64/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>上一页</a></li>
+  		
+
+        <li><a href="/archives"><i class="fa fa-archive"></i>Archive</a></li>
+
+		
+		   <li class="next"><a href="/2018/11/04/Spring Boot使用jetty作为Servlet容器/" class="alignright next">下一页<i class="fa fa-arrow-circle-o-right"></i></a></li>         
+        
+	
+</ul>
+</div>
+
+    </center>
+	</div>
+
+    <!-- share -->
+    
+        
+    <div class="bdsharebuttonbox">
+        <a href="#" class="bds_more" data-cmd="more"></a>
+        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+        <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+        <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+        <a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+        <a href="#" class="bds_evernotecn" data-cmd="evernotecn" title="分享到印象笔记"></a>
+        <a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+        <a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+    </div>
+    <script>
+        window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+
+
+        
+
+    
+	
+	<!-- comment -->
+	
+<section id="comment">
+  <h2 class="title">留言</h2>
+  
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2018-12-01 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    </li><li><a href="/categories/Spring/">Spring<span>4</span></a></li>
+  
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/Java/">Java<span>6</span></a></li> <li><a href="/tags/Spring/">Spring<span>4</span></a></li> <li><a href="/tags/Spring-Boot/">Spring Boot<span>3</span></a></li> <li><a href="/tags/缓存/">缓存<span>1</span></a></li>
+    </ul>
+	</div>
+	
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2019 朱恒伟
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+</p> </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<!-- syntax highlighting -->
+
+
+</body>
+   </html>

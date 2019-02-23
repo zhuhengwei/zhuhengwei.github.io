@@ -1,0 +1,317 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>RPC接口与消息MQ对比 | 刻剑求舟</title>
+  <meta name="author" content="朱恒伟">
+  
+  <meta name="description" content="个人站点，记录生活学习点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="RPC接口与消息MQ对比">
+  <meta property="og:site_name" content="刻剑求舟">
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/themes/bootstrap.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight-default.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/comment.css" media="screen" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+  
+  <!-- analytics -->
+  
+
+
+
+</head>
+</html>
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <a class="navbar-brand" href="/">刻剑求舟</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class="fa fa-folder"></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header page-header-inverse ">		
+			<h1 class="title title-inverse "> RPC接口与消息MQ对比</h1>
+		</div>		
+	
+
+
+
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p><strong>RPC接口(Remote Procedure Call,远程过程调用)</strong></p>
+<p><strong>MQ消息(Message Queue)</strong></p>
+<p>两种方式都可以用于数据的传递，这方面两者达到效果相同，区别在于使用方式、技术指标：同步异步、数据暂存等.<br><a id="more"></a></p>
+<h2 id="系统结构"><a href="#系统结构" class="headerlink" title="系统结构"></a>系统结构</h2><h3 id="RPC系统结构"><a href="#RPC系统结构" class="headerlink" title="RPC系统结构"></a>RPC系统结构</h3><p>Client直接调用的server提供的服务。<br><img src="https://i.imgur.com/RT9VWvr.png" alt></p>
+<h3 id="Message-Queue系统结构"><a href="#Message-Queue系统结构" class="headerlink" title="Message Queue系统结构"></a>Message Queue系统结构</h3><p>producer发送消息给Queue；consumer从MQ拿到消息来处理。一般无需关注返回,或者以消息或其他形式返回<br><img src="https://i.imgur.com/4I0y0BD.png" alt><br>在架构上，RPC和Message的差异点是，MQ有中间结点可以把消息存储,起到缓冲作用。</p>
+<h2 id="功能特点"><a href="#功能特点" class="headerlink" title="功能特点"></a>功能特点</h2><h2 id="消息的特点"><a href="#消息的特点" class="headerlink" title="消息的特点"></a>消息的特点</h2><ul>
+<li><p>MQ把请求的压力保存，逐渐释放出来，让处理者按照自身能力来处理。</p>
+</li>
+<li><p>MQ引入新的结点,增加系统复杂度，系统的可靠性会受Message Queue结点的影响。</p>
+</li>
+<li><p>MQ是异步单向。发送消息不需要等待消息处理完成。</p>
+</li>
+</ul>
+<p>所以对于有同步返回需求，不便用MQ。</p>
+<h2 id="RPC的特点"><a href="#RPC的特点" class="headerlink" title="RPC的特点"></a>RPC的特点</h2><ul>
+<li><p>同步调用，对于需等待返回结果/处理结果的场景，RPC是非常方便,自然的使用方式。(RPC也可以是异步调用,不讨论)</p>
+</li>
+<li><p>由于等待结果，Client会有线程消耗。</p>
+</li>
+</ul>
+<p>如果以异步RPC的方式使用，Client线程消耗可以省去。但不能做到像消息一样暂存消息/请求，压力会直接打到服务端。</p>
+<h3 id="适用场合"><a href="#适用场合" class="headerlink" title="适用场合"></a>适用场合</h3><ul>
+<li><p>希望同步得到结果的场合，选RPC。</p>
+</li>
+<li><p>希望使用简单，选RPC.RPC操作基于接口，使用简单。异步的方式编程比较复杂。</p>
+</li>
+<li><p>客户端不希望受制于服务端的处理速度时，选Message Queue。</p>
+</li>
+</ul>
+<p>随着业务增长，服务端处理会成为瓶颈，会进行同步调用到异步消息的改造。这样的改造实际上也调整业务的使用方式。</p>
+<h3 id="不适用场合"><a href="#不适用场合" class="headerlink" title="不适用场合"></a>不适用场合</h3><ul>
+<li><p>RPC接口特别耗时时</p>
+</li>
+<li><p>RPC同步调用,但使用Message Queue来传输调用信息。 这种做法发送端是在等待，同时占用中间点的资源。系统变得复杂且没有对等的收益。</p>
+</li>
+<li><p>对于返回值是void的调用，可以用消息，因为这个调用业务不需要同步得到处理结果，只要保证会处理即可。（RPC的方式可以保证调用返回即处理完成，使用消息后无法保证。）</p>
+</li>
+</ul>
+<h3 id="消息的解耦"><a href="#消息的解耦" class="headerlink" title="消息的解耦"></a>消息的解耦</h3><ul>
+<li><p>消息的发送者，不需要关心接收者。RPC服务通过注册中心也可以做到，即服务调用者到注册中心查询服务提供者信息，调用者事前不需知道。</p>
+</li>
+<li><p>消息的发送者，不用关心发给几个消息组件。这一点RPC可以通过服务编排做到。</p>
+</li>
+</ul>
+	  
+	</div>
+
+	<!-- recommended posts -->
+	
+
+	<div>
+  	<center>
+	<div class="pagination">
+<ul class="pagination">
+	 
+				
+    	<li class="prev"><a href="/2018/04/17/Nagle Algorithm/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>上一页</a></li>
+  		
+
+        <li><a href="/archives"><i class="fa fa-archive"></i>Archive</a></li>
+
+		
+		   <li class="next"><a href="/2018/03/10/PECS/" class="alignright next">下一页<i class="fa fa-arrow-circle-o-right"></i></a></li>         
+        
+	
+</ul>
+</div>
+
+    </center>
+	</div>
+
+    <!-- share -->
+    
+        
+    <div class="bdsharebuttonbox">
+        <a href="#" class="bds_more" data-cmd="more"></a>
+        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+        <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+        <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+        <a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+        <a href="#" class="bds_evernotecn" data-cmd="evernotecn" title="分享到印象笔记"></a>
+        <a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+        <a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+    </div>
+    <script>
+        window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+
+
+        
+
+    
+	
+	<!-- comment -->
+	
+<section id="comment">
+  <h2 class="title">留言</h2>
+  
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2018-04-17 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    </li><li><a href="/categories/架构/">架构<span>1</span></a></li>
+  
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/RPC/">RPC<span>1</span></a></li> <li><a href="/tags/MQ/">MQ<span>1</span></a></li>
+    </ul>
+	</div>
+	
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2019 朱恒伟
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+</p> </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<!-- syntax highlighting -->
+
+
+</body>
+   </html>

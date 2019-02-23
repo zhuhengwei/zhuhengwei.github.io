@@ -1,0 +1,277 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Shell脚本启动Storm集群 | 刻剑求舟</title>
+  <meta name="author" content="朱恒伟">
+  
+  <meta name="description" content="个人站点，记录生活学习点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Shell脚本启动Storm集群">
+  <meta property="og:site_name" content="刻剑求舟">
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/themes/bootstrap.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight-default.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/comment.css" media="screen" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+  
+  <!-- analytics -->
+  
+
+
+
+</head>
+</html>
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <a class="navbar-brand" href="/">刻剑求舟</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class="fa fa-folder"></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header page-header-inverse ">		
+			<h1 class="title title-inverse "> Shell脚本启动Storm集群</h1>
+		</div>		
+	
+
+
+
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>　　最近因为学习需要，搭建了storm集群，装了比较旧的版本storm-0.8.1,也安装了ZMQ，中间安装过程之曲折不属本文范围，以后再整理。本文先把storm集群启动的脚本放出,其中包含了启动zookeeper。其他集群，spark，hadoop启动、停止脚本可参考本脚本。代码不完善之处依照具体业务修改。<br><a id="more"></a></p>
+<h5 id="启动之前的准备工作"><a href="#启动之前的准备工作" class="headerlink" title="启动之前的准备工作"></a>启动之前的准备工作</h5><p>1）机器配置,ip-机器名 在hosts中配置好<br>2）配置各节点storm 的STORM_HOME和ZOOKEEPER_HOME<br>3）各节点SSH免密码访问<br>Done</p>
+<h5 id="脚本代码"><a href="#脚本代码" class="headerlink" title="脚本代码"></a>脚本代码</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">##准备工作：</span></span><br><span class="line"><span class="comment">#机器配置,ip-机器名 在hosts中配置好</span></span><br><span class="line"><span class="comment">#配置各节点storm 的STORM_HOME和ZOOKEEPER_HOME</span></span><br><span class="line"><span class="comment">#SSH免密码访问</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#脚本在主节点下运行</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#zk的节点，3台，不在主节点启动</span></span><br><span class="line">zookeeperServers=<span class="string">'Server58 Server60 Server62'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#工作节点，不含主节点</span></span><br><span class="line">supervisorServers=<span class="string">'Server58 Server60 Server62'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#nimbus和ui节点</span></span><br><span class="line">nimbusServer=<span class="string">'Server76'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#启动各个zookeeper server</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="variable">$zookeeperServers</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">ssh -T <span class="variable">$i</span> &lt;&lt;EOF</span><br><span class="line">	<span class="built_in">source</span> /etc/profile</span><br><span class="line">	<span class="built_in">cd</span> \<span class="variable">$ZOOKEEPER_HOME</span></span><br><span class="line">	./bin/zkServer.sh start</span><br><span class="line">EOF</span><br><span class="line"><span class="built_in">echo</span> 启动zookeeper<span class="variable">$i</span>...[ <span class="keyword">done</span> ]</span><br><span class="line">sleep 1</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#启动主节点的nimbus/ui</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$STORM_HOME</span></span><br><span class="line">python bin/storm nimbus &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line">python bin/storm supervisor &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line">python bin/storm ui &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line"></span><br><span class="line">sleep 1</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> 启动主节点<span class="variable">$nimbusServer</span> nimbus...[ <span class="keyword">done</span> ]</span><br><span class="line"><span class="built_in">echo</span> 启动主节点<span class="variable">$nimbusServer</span> supervisor...[ <span class="keyword">done</span> ]</span><br><span class="line"><span class="built_in">echo</span> 启动主节点<span class="variable">$nimbusServer</span> UI...[ <span class="keyword">done</span> ]</span><br><span class="line"></span><br><span class="line"><span class="comment">#启动其余所有的supervisor</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="variable">$supervisorServers</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">ssh -T <span class="variable">$j</span> &lt;&lt;EOF</span><br><span class="line">	<span class="built_in">source</span> /etc/profile</span><br><span class="line">	<span class="built_in">cd</span> \<span class="variable">$STORM_HOME</span></span><br><span class="line">	python bin/storm supervisor &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line">EOF</span><br><span class="line"><span class="built_in">echo</span> 启动从节点<span class="variable">$j</span> supervisor...[ <span class="keyword">done</span> ]</span><br><span class="line">sleep 1</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#检查nimbus是否启动</span></span><br><span class="line">count=`jps |grep nimbus |wc -l`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$count</span> = 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">cd</span> <span class="variable">$STORM_HOME</span></span><br><span class="line">	python bin/storm nimbus &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#检查UI是否启动</span></span><br><span class="line">count=`jps |grep core |wc -l`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$count</span> = 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">cd</span> <span class="variable">$STORM_HOME</span></span><br><span class="line">	python bin/storm ui &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#检查其余各个supervisor是否启动</span></span><br><span class="line"><span class="comment">#如果刚才没有正常启动，则启动</span></span><br><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> <span class="variable">$supervisorServers</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">ssh -T <span class="variable">$k</span> &lt;&lt;EOF</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line">count3=`jps |grep supervisor |wc -l`</span><br><span class="line"><span class="keyword">if</span> [ \<span class="variable">$count3</span> = 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">cd</span> \<span class="variable">$STORM_HOME</span> </span><br><span class="line">	python bin/storm supervisor &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">EOF</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#检查主节点supervisor是否启动</span></span><br><span class="line">count2=`jps |grep supervisor |wc -l`</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$count2</span> = 0 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">cd</span> <span class="variable">$STORM_HOME</span></span><br><span class="line">	python bin/storm supervisor &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">sleep 2</span><br><span class="line"><span class="built_in">echo</span> storm集群启动成功....[ <span class="keyword">done</span> ]</span><br></pre></td></tr></table></figure>
+<p>附CSDN代码块链接。<a href="https://code.csdn.net/snippets/1437227/master/download" target="_blank" rel="noopener">来自 CODE的代码片。</a></p>
+	  
+	</div>
+
+	<!-- recommended posts -->
+	
+
+	<div>
+  	<center>
+	<div class="pagination">
+<ul class="pagination">
+	 
+				
+    	<li class="prev"><a href="/2016/01/27/Redis存储复杂类型的思考/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>上一页</a></li>
+  		
+
+        <li><a href="/archives"><i class="fa fa-archive"></i>Archive</a></li>
+
+		
+		   <li class="next"><a href="/2015/07/10/mysql随机更新表里的数据/" class="alignright next">下一页<i class="fa fa-arrow-circle-o-right"></i></a></li>         
+        
+	
+</ul>
+</div>
+
+    </center>
+	</div>
+
+    <!-- share -->
+    
+        
+    <div class="bdsharebuttonbox">
+        <a href="#" class="bds_more" data-cmd="more"></a>
+        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+        <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+        <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+        <a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+        <a href="#" class="bds_evernotecn" data-cmd="evernotecn" title="分享到印象笔记"></a>
+        <a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+        <a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+    </div>
+    <script>
+        window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+
+
+        
+
+    
+	
+	<!-- comment -->
+	
+<section id="comment">
+  <h2 class="title">留言</h2>
+  
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2015-12-06 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    </li><li><a href="/categories/大数据/">大数据<span>1</span></a></li>
+  
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/shell/">shell<span>2</span></a></li> <li><a href="/tags/大数据/">大数据<span>1</span></a></li> <li><a href="/tags/storm/">storm<span>1</span></a></li> <li><a href="/tags/集群/">集群<span>1</span></a></li>
+    </ul>
+	</div>
+	
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2019 朱恒伟
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+</p> </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<!-- syntax highlighting -->
+
+
+</body>
+   </html>

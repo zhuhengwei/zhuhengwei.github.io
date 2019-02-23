@@ -1,0 +1,312 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Nagle&#39;s Algorithm | 刻剑求舟</title>
+  <meta name="author" content="朱恒伟">
+  
+  <meta name="description" content="个人站点，记录生活学习点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Nagle&#39;s Algorithm">
+  <meta property="og:site_name" content="刻剑求舟">
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/themes/bootstrap.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight-default.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/comment.css" media="screen" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+  
+  <!-- analytics -->
+  
+
+
+
+</head>
+</html>
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <a class="navbar-brand" href="/">刻剑求舟</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class="fa fa-folder"></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header page-header-inverse ">		
+			<h1 class="title title-inverse "> Nagle&#39;s Algorithm</h1>
+		</div>		
+	
+
+
+
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h2 id="1-Nagle’s-Algorithm"><a href="#1-Nagle’s-Algorithm" class="headerlink" title="1 Nagle’s Algorithm"></a>1 Nagle’s Algorithm</h2><p>Nagle’s Algorithm 是为了提高带宽利用率设计的算法，<strong>其做法是合并小的TCP 包为一个，避免了过多的小报文的 TCP 头所浪费的带宽</strong>。如果开启了这个算法 （默认开启），则协议栈会累积数据直到以下两个条件之一满足的时候才真正发送出去：<br><a id="more"></a></p>
+<ol>
+<li>积累的数据量到达最大的 TCP Segment Size</li>
+<li>收到了一个 Ack</li>
+</ol>
+<p>TCP Delayed Acknoledgement 也是为了类似的目的被设计出来的，作用就是延迟 Ack 包的发送，使得协议栈有机会合并多个 Ack，提高网络性能。</p>
+<p>如果一个 TCP 连接的一端启用了 Nagle‘s Algorithm，而另一端启用了 TCP Delayed Ack，而发送的数据包又比较小，则可能会出现这样的情况：发送端在等 待接收端对上一个packet 的 Ack 才发送当前的 packet，而接收端则正好延迟了 此 Ack 的发送，那么这个正要被发送的 packet 就会同样被延迟。当然 Delayed Ack 是有个超时机制的，而默认的超时正好就是 40ms。</p>
+<p>现代的 TCP/IP 协议栈实现，默认几乎都启用了这两个功能.</p>
+<p>仅当协议的交互是发送端连续发送两个 packet，然后立刻 read 的 时候才会出现问题。</p>
+<h2 id="2-为什么只有-Write-Write-Read-时才会出问题"><a href="#2-为什么只有-Write-Write-Read-时才会出问题" class="headerlink" title="2 为什么只有 Write-Write-Read 时才会出问题"></a>2 为什么只有 Write-Write-Read 时才会出问题</h2><p>维基百科上的有一段伪代码来介绍 Nagle’s Algorithm：</p>
+<pre><code>if there is new data to send
+  if the window size &gt;= MSS and available data is &gt;= MSS
+    send complete MSS segment now
+  else
+    if there is unconfirmed data still in the pipe
+      enqueue data in the buffer until an acknowledge is received
+    else
+      send data immediately
+    end if
+  end if
+end if
+</code></pre><p>当待发送的数据比 MSS 小的时候（外层的 else 分支），还要再判断还有未确认的数据。只有当管道里还有未确认数据的时候才会进入缓冲区， 等待 Ack。</p>
+<p>所以发送端发送的第一个 write 是不会被缓冲起来，而是立刻发送的（进入内层 的else 分支），这时接收端收到对应的数据，但它还期待更多数据才进行处理， 所以不会往回发送数据，因此也没机会把 Ack 给带回去，根据Delayed Ack 机制， 这个 Ack 会被 Hold 住。这时发送端发送第二个包，而队列里还有未确认的数据 包，所以进入了内层 if 的 then 分支，这个 packet 会被缓冲起来。此时，发送端在等待接收端的 Ack；接收端则在 Delay 这个 Ack，所以都在等待，直到接 收端 Deplayed Ack 超时（40ms），此 Ack 被发送回去，发送端缓冲的这个 packet 才会被真正送到接收端，从而继续下去。</p>
+<p>那么 write-read-write-read 会不会出问题呢？维基百科上的解释是不会：</p>
+<blockquote>
+<p>The user-level solution is to avoid write-write-read sequences on sockets. write-read-write-read is fine. write-write-write is fine. But write-write-read is a killer. So, if you can, buffer up your little writes to TCP and send them all at once. Using the standard UNIX I/O package and flushing write before each read usually works.</p>
+</blockquote>
+<p>因为第一个 write 不会被缓冲，会立刻到达接收端，如果是 write-read-write-read 模式，此时接收端应该已经得到所有需要的数据以进行 下一步处理。接收端此时处理完后发送结果，同时也就可以把上一个packet 的 Ack 可以和数据一起发送回去，不需要 delay，从而不会导致任何问题。</p>
+<h2 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3 解决方案"></a>3 解决方案</h2><h3 id="3-1-优化协议"><a href="#3-1-优化协议" class="headerlink" title="3.1 优化协议"></a>3.1 优化协议</h3><p>连续 write 小数据包，然后 read 其实是一个不好的网络编程模式，这样的连续 write 其实应该在应用层合并成一次 write。</p>
+<h3 id="3-2-开启-TCP-NODELAY-true"><a href="#3-2-开启-TCP-NODELAY-true" class="headerlink" title="3.2 开启 TCP_NODELAY=true"></a>3.2 开启 TCP_NODELAY=true</h3><p><strong>禁用 Nagle’s Algorithm</strong>。在 UNIX C 里使用setsockopt 可以做到：</p>
+<pre><code>static void _set_tcp_nodelay(int fd) {
+    int enable = 1;
+    setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (void*)&amp;enable, sizeof(enable));
+}
+</code></pre><p>在 Java 里，Socket 对象上有一个 setTcpNoDelay 的方法，直接设置成 true 。</p>
+<pre><code>socket.setTcpNoDelay(true);
+</code></pre><p>python</p>
+<pre><code>s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+</code></pre><p>不过,python下实验,禁用没有效果,待解决….Nginx 默认也是开启了这个选项的</p>
+	  
+	</div>
+
+	<!-- recommended posts -->
+	
+
+	<div>
+  	<center>
+	<div class="pagination">
+<ul class="pagination">
+	 
+				
+    	<li class="prev"><a href="/2018/05/01/Spring AOP原理/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>上一页</a></li>
+  		
+
+        <li><a href="/archives"><i class="fa fa-archive"></i>Archive</a></li>
+
+		
+		   <li class="next"><a href="/2018/04/17/RPC接口与消息MQ对比/" class="alignright next">下一页<i class="fa fa-arrow-circle-o-right"></i></a></li>         
+        
+	
+</ul>
+</div>
+
+    </center>
+	</div>
+
+    <!-- share -->
+    
+        
+    <div class="bdsharebuttonbox">
+        <a href="#" class="bds_more" data-cmd="more"></a>
+        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+        <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+        <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+        <a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+        <a href="#" class="bds_evernotecn" data-cmd="evernotecn" title="分享到印象笔记"></a>
+        <a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+        <a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+    </div>
+    <script>
+        window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+
+
+        
+
+    
+	
+	<!-- comment -->
+	
+<section id="comment">
+  <h2 class="title">留言</h2>
+  
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2018-04-17 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    </li><li><a href="/categories/操作系统/">操作系统<span>2</span></a></li>
+  
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/TCP/">TCP<span>1</span></a></li> <li><a href="/tags/Nagle/">Nagle<span>1</span></a></li>
+    </ul>
+	</div>
+	
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2019 朱恒伟
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+</p> </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<!-- syntax highlighting -->
+
+
+</body>
+   </html>

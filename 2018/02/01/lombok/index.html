@@ -1,0 +1,387 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>lombok | 刻剑求舟</title>
+  <meta name="author" content="朱恒伟">
+  
+  <meta name="description" content="个人站点，记录生活学习点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="lombok">
+  <meta property="og:site_name" content="刻剑求舟">
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/themes/bootstrap.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight-default.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/comment.css" media="screen" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+  
+  <!-- analytics -->
+  
+
+
+
+</head>
+</html>
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <a class="navbar-brand" href="/">刻剑求舟</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class="fa fa-folder"></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header page-header-inverse ">		
+			<h1 class="title title-inverse "> lombok</h1>
+		</div>		
+	
+
+
+
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h2 id="1-lombok是什么"><a href="#1-lombok是什么" class="headerlink" title="1 lombok是什么"></a>1 lombok是什么</h2><p>Lombok通过注解简化和消除一些必须有但很臃肿冗余的Java代码(如setter,getter…)的工具，通过使用对应的注解，在编译源码时生成对应方法。官方地址：<a href="https://projectlombok.org/，github地址：https://github.com/rzwitserloot/lombok。" target="_blank" rel="noopener">https://projectlombok.org/，github地址：https://github.com/rzwitserloot/lombok。</a></p>
+<p>lombok是一个IDE插件,也是一个项目需要依赖的jar包.lombok是依赖jar包的原因是因为编译时要用它的注解.是插件的原因是lombok要在编译时通过操作AST(abstract syntax tree.抽象语法树)改变字节码生成.也就是说可以改变java语法. 不像spring的依赖注入或者hibernate的orm一样是运行时的特性,lombok是编译时的特性.编译后的.class中lombok的注解被消除.<br><a id="more"></a></p>
+<h2 id="2-lombok能做什么"><a href="#2-lombok能做什么" class="headerlink" title="2 lombok能做什么"></a>2 lombok能做什么</h2><p>使用一个java对象,要写一些getter和setter方法,可能还要写一个构造器、equals方法、或者hash方法.这些方法很冗长而且没有技术含量,称之为样板代码(boilerplate code).lombok的主要作用是通过一些注解，消除样板代码.</p>
+<p>比如Person.java,一个字段对应一个setter与getter,随之字段增多,代码长度快速增长.</p>
+<pre><code>public class Person {
+    private int id;
+    private String idCard;
+    private String name;
+    //0-female,1-male
+    private int sex;
+    private String address;
+    private int age;
+    private Date birthday;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getIdCard() {
+        return idCard;
+    }
+
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+        @JsonFormat(pattern = &quot;yyyy-MM-dd HH:mm:ss&quot;, timezone = &quot;GMT+8&quot;)
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+}
+</code></pre><p>如果使用lombok,如下,简单优雅.源代码更为简洁和更不容易产生错误。</p>
+<pre><code>@Data
+public class PersonBean {
+    private int id;
+    private String idCard;
+    private String name;
+    //0-female,1-male
+    private int sex;
+    private String address;
+    private int age;
+
+    @JsonFormat(pattern = &quot;yyyy-MM-dd HH:mm:ss&quot;, timezone = &quot;GMT+8&quot;)
+    private Date birthday;
+}
+</code></pre><p>可以看到,已经自动生成了getter/setter/equals/hashcode/toString等方法.如果觉得@Data注解简单粗暴,Lombok还提供一些更精细的注解,比如@Getter/@Setter(field注解),@ToString/@AllArgsConstructor(类注解).</p>
+<h2 id="3-Lombok使用"><a href="#3-Lombok使用" class="headerlink" title="3 Lombok使用"></a>3 Lombok使用</h2><h3 id="3-1-添加依赖"><a href="#3-1-添加依赖" class="headerlink" title="3.1 添加依赖"></a>3.1 添加依赖</h3><blockquote>
+</blockquote>
+<p>To set up lombok with any build tool, you have to specify that the lombok dependency is required to compile your source code, but does not need to be present when running/testing/jarring/otherwise deploying your code. Generally this is called a ‘provided’ dependency. </p>
+<p>简单翻译下,需要指定lombok依赖才能编译源码,但是运行时,测试等阶段是不需要的,因此依赖范围为’provided’,</p>
+<pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+  &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+  &lt;version&gt;1.18.2&lt;/version&gt;
+  &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre><h3 id="3-2-使用注解"><a href="#3-2-使用注解" class="headerlink" title="3.2 使用注解"></a>3.2 使用注解</h3><p>在想用的地方加入注解,类或属性上</p>
+<h3 id="3-3-Lombok插件"><a href="#3-3-Lombok插件" class="headerlink" title="3.3 Lombok插件"></a>3.3 Lombok插件</h3><p>为了在IDE中编写代码时不报错(找不到对应方法,编译问题),需要添加插件才能支持Lombok.搜索安装即可.安装后并重启IDE.</p>
+<h3 id="4-常用注解"><a href="#4-常用注解" class="headerlink" title="4 常用注解"></a>4 常用注解</h3><p><strong>@Getter / @Setter</strong></p>
+<p>可以作用在类和属性上，放在类上，会对所有的非静态(non-static)属性生成Getter/Setter方法，放在属性上，会对该属性生成Getter/Setter方法。并可以指定Getter/Setter方法的访问级别。</p>
+<p><strong>@EqualsAndHashCode</strong></p>
+<p>默认情况下，会使用所有非瞬态(non-transient)和非静态(non-static)字段来生成equals和hascode方法，也可以指定具体使用哪些属性。</p>
+<p><strong>@ToString</strong></p>
+<p>生成toString方法，默认情况下，会输出类名、所有属性，属性会按照顺序输出，以逗号分割。</p>
+<p><strong>@NoArgsConstructor,@RequiredArgsConstructor and @AllArgsConstructor</strong></p>
+<p>无参构造器、部分参数构造器、全参构造器，当我们需要重载多个构造器的时候，Lombok就无能为力了。</p>
+<p><strong>@Data</strong></p>
+<p>包含@ToString, @EqualsAndHashCode, 所有属性的@Getter, 所有non-final属性的@Setter和@RequiredArgsConstructor的组合，通常情况下，基本上使用这个注解就足够了</p>
+<p>更多feature,参见官网.<a href="https://projectlombok.org/features/all" target="_blank" rel="noopener">https://projectlombok.org/features/all</a></p>
+<h2 id="5-lombok问题"><a href="#5-lombok问题" class="headerlink" title="5 lombok问题"></a>5 lombok问题</h2><h3 id="5-1-插件问题"><a href="#5-1-插件问题" class="headerlink" title="5.1 插件问题"></a>5.1 插件问题</h3><p>需要安装插件,项目才能正常编译.当使用省略的方法时可能会标红(运行不会报错，因为 lombok 在编译时生成了这些代码，但编译前的 IDE 可不知道)，因此需要配合 插件使用。不知道lombok的同学会不明所以.</p>
+<p>某些IDE不支持lombok插件时,可以使用delombok.<a href="https://projectlombok.org/features/delombok" target="_blank" rel="noopener">https://projectlombok.org/features/delombok</a></p>
+<h3 id="5-2-构造器重载"><a href="#5-2-构造器重载" class="headerlink" title="5.2 构造器重载"></a>5.2 构造器重载</h3><p>无法支持多种参数构造器的重载</p>
+<h3 id="5-3-debug"><a href="#5-3-debug" class="headerlink" title="5.3 debug"></a>5.3 debug</h3><p>debug时可能不好打断点。Eclipse有解法，IntelliJ有workaround。据说都不是特别好。但是,断点打在Bean里…很多时候是没有必要的,除非你在Bean里写了特殊逻辑</p>
+<p>由于lombok有上述一些问题,使用lombok存在一定争议.但对于新事物,应大胆尝试,批判使用.</p>
+	  
+	</div>
+
+	<!-- recommended posts -->
+	
+
+	<div>
+  	<center>
+	<div class="pagination">
+<ul class="pagination">
+	 
+				
+    	<li class="prev"><a href="/2018/02/01/Git清理无效分支/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>上一页</a></li>
+  		
+
+        <li><a href="/archives"><i class="fa fa-archive"></i>Archive</a></li>
+
+		
+		   <li class="next"><a href="/2018/01/05/Java8新特性/" class="alignright next">下一页<i class="fa fa-arrow-circle-o-right"></i></a></li>         
+        
+	
+</ul>
+</div>
+
+    </center>
+	</div>
+
+    <!-- share -->
+    
+        
+    <div class="bdsharebuttonbox">
+        <a href="#" class="bds_more" data-cmd="more"></a>
+        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+        <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+        <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+        <a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+        <a href="#" class="bds_evernotecn" data-cmd="evernotecn" title="分享到印象笔记"></a>
+        <a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+        <a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+    </div>
+    <script>
+        window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+
+
+        
+
+    
+	
+	<!-- comment -->
+	
+<section id="comment">
+  <h2 class="title">留言</h2>
+  
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2018-02-01 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    </li><li><a href="/categories/Java/">Java<span>5</span></a></li>
+  
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/Java/">Java<span>6</span></a></li> <li><a href="/tags/lombok/">lombok<span>1</span></a></li>
+    </ul>
+	</div>
+	
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2019 朱恒伟
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+</p> </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<!-- syntax highlighting -->
+
+
+</body>
+   </html>

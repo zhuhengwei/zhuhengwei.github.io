@@ -1,0 +1,277 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>mysql批量备份多表 | 刻剑求舟</title>
+  <meta name="author" content="朱恒伟">
+  
+  <meta name="description" content="个人站点，记录生活学习点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="mysql批量备份多表">
+  <meta property="og:site_name" content="刻剑求舟">
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/themes/bootstrap.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight-default.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/comment.css" media="screen" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+  
+  <!-- analytics -->
+  
+
+
+
+</head>
+</html>
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <a class="navbar-brand" href="/">刻剑求舟</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class="fa fa-folder"></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header page-header-inverse ">		
+			<h1 class="title title-inverse "> mysql批量备份多表</h1>
+		</div>		
+	
+
+
+
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h3 id="1-批量备份-mysql-多表，每个表一个-sql"><a href="#1-批量备份-mysql-多表，每个表一个-sql" class="headerlink" title="1. 批量备份 mysql 多表，每个表一个.sql"></a>1. 批量备份 mysql 多表，每个表一个.sql</h3><p>对于每天生成的表，需要把以前的表备份，即定义起始的表和结束的表，针对有规律的表的备份。<br><a id="more"></a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">IPAddress=8.8.8.8</span><br><span class="line">DB_pwd=mysqltest   <span class="comment">#数据库密码；</span></span><br><span class="line">DB_name=mysqltest   <span class="comment">#数据库名称；</span></span><br><span class="line">table_name=<span class="string">"zhw_"</span>  <span class="comment">#数据表名称前缀；</span></span><br><span class="line"></span><br><span class="line">Start=20150112 <span class="comment"># 每天生成的表 的开始的第一个</span></span><br><span class="line">End=20150610   <span class="comment">#每天生成的表 最后需要备份的一个</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">BACKUP_tmp=/usr/<span class="built_in">local</span>/mysqltestbackup/backupsql     <span class="comment">#备份文件临时存放目录；</span></span><br><span class="line">BACKUP_path=/usr/<span class="built_in">local</span>/mysqltestbackup    <span class="comment">#备份文件压缩打包存放目录；</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">DATERange=`seq -f%.f <span class="variable">$Start</span> <span class="variable">$End</span> | date -f - <span class="string">"+%Y%m%d"</span> 2&gt;/dev/null` <span class="comment">#日期范围</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="variable">$DATERange</span></span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">    mysqldump -h<span class="variable">$IPAddress</span>  -umysqltest -p<span class="variable">$DB_pwd</span> <span class="variable">$DB_name</span> <span class="variable">$table_name</span><span class="variable">$i</span> &gt; <span class="variable">$BACKUP_tmp</span>/<span class="variable">$table_name</span><span class="variable">$i</span>-$(date +%Y%m%d%H%M%S).sql</span><br><span class="line">  sleep 1</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">  sleep 10</span><br><span class="line"><span class="comment">#将备份数据打包；</span></span><br><span class="line">    tar -cvzf <span class="variable">$BACKUP_path</span>/<span class="variable">$DB_name</span>-<span class="variable">$table_name</span>-$(date +%Y%m%d%H%M%S).tar.gz <span class="variable">$BACKUP_tmp</span>/*</span><br><span class="line"><span class="built_in">exit</span> 0</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-备份数据库里的所有的表，每个表一个-sql"><a href="#2-备份数据库里的所有的表，每个表一个-sql" class="headerlink" title="2. 备份数据库里的所有的表，每个表一个.sql"></a>2. 备份数据库里的所有的表，每个表一个.sql</h3><p>1）首先需要从information_schema表中获得每个表的名称,保存为文件，如all_tables<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">SELECT</span> TABLE_NAME <span class="keyword">FROM</span> information_schema.<span class="string">`TABLES`</span></span><br><span class="line"><span class="keyword">WHERE</span> TABLE_SCHEMA =<span class="string">'mysqltest'</span> <span class="keyword">AND</span> TABLE_TYPE =<span class="string">'BASE TABLE'</span></span><br></pre></td></tr></table></figure></p>
+<p>2） 执行脚本.<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">IPAddress=8.8.8.8</span><br><span class="line">DB_pwd=mysqltest   <span class="comment">#数据库密码；</span></span><br><span class="line">DB_name=mysqltest   <span class="comment">#数据库名称；</span></span><br><span class="line"></span><br><span class="line">BACKUP_tmp=/usr/<span class="built_in">local</span>/mysqltestbackup/backupsql     <span class="comment">#备份文件临时存放目录；</span></span><br><span class="line">BACKUP_path=/usr/<span class="built_in">local</span>/mysqltestbackup    <span class="comment">#备份文件压缩打包存放目录；</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `cat all_tables`</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">    mysqldump -h<span class="variable">$IPAddress</span>  -umysqltest -p<span class="variable">$DB_pwd</span> <span class="variable">$DB_name</span> <span class="variable">$i</span> &gt; <span class="variable">$BACKUP_tmp</span>/<span class="variable">$i</span>-$(date +%Y%m%d%H%M%S).sql</span><br><span class="line">  sleep 1</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">  sleep 10</span><br><span class="line"><span class="comment">#将备份数据打包；</span></span><br><span class="line">    tar -cvzf <span class="variable">$BACKUP_path</span>/<span class="variable">$DB_name</span>-$(date +%Y%m%d%H%M%S).tar.gz <span class="variable">$BACKUP_tmp</span>/*</span><br><span class="line"><span class="built_in">exit</span> 0</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-备份整个数据库，一个-sql-不赘述。"><a href="#3-备份整个数据库，一个-sql-不赘述。" class="headerlink" title="3. 备份整个数据库，一个.sql,不赘述。"></a>3. 备份整个数据库，一个.sql,不赘述。</h3><h3 id="4-备份多表，无规律。若把表名准备好，结合第二个脚本使用，也可以每个表单个-sql。"><a href="#4-备份多表，无规律。若把表名准备好，结合第二个脚本使用，也可以每个表单个-sql。" class="headerlink" title="4. 备份多表，无规律。若把表名准备好，结合第二个脚本使用，也可以每个表单个.sql。"></a>4. 备份多表，无规律。若把表名准备好，结合第二个脚本使用，也可以每个表单个.sql。</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -h<span class="variable">$IPAddress</span>  -umysqltest -p<span class="variable">$DB_pwd</span> <span class="variable">$DB_name</span> 表1 表2 表3.... &gt; <span class="variable">$BACKUP_tmp</span>/<span class="variable">$i</span>-$(date +%Y%m%d%H%M%S).sql</span><br></pre></td></tr></table></figure>
+	  
+	</div>
+
+	<!-- recommended posts -->
+	
+
+	<div>
+  	<center>
+	<div class="pagination">
+<ul class="pagination">
+	 
+				
+    	<li class="prev"><a href="/2015/07/10/mysql随机更新表里的数据/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>上一页</a></li>
+  		
+
+        <li><a href="/archives"><i class="fa fa-archive"></i>Archive</a></li>
+
+		
+		   <li class="next"><a href="/2014/12/02/域名绑定本机Tomcat项目/" class="alignright next">下一页<i class="fa fa-arrow-circle-o-right"></i></a></li>         
+        
+	
+</ul>
+</div>
+
+    </center>
+	</div>
+
+    <!-- share -->
+    
+        
+    <div class="bdsharebuttonbox">
+        <a href="#" class="bds_more" data-cmd="more"></a>
+        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+        <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+        <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+        <a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+        <a href="#" class="bds_evernotecn" data-cmd="evernotecn" title="分享到印象笔记"></a>
+        <a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+        <a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+    </div>
+    <script>
+        window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+
+
+        
+
+    
+	
+	<!-- comment -->
+	
+<section id="comment">
+  <h2 class="title">留言</h2>
+  
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2015-07-04 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    </li><li><a href="/categories/MySQL/">MySQL<span>2</span></a></li>
+  
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/mysql/">mysql<span>7</span></a></li> <li><a href="/tags/shell/">shell<span>2</span></a></li> <li><a href="/tags/备份/">备份<span>1</span></a></li>
+    </ul>
+	</div>
+	
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2019 朱恒伟
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+</p> </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<!-- syntax highlighting -->
+
+
+</body>
+   </html>

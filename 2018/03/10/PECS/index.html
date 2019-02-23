@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>PECS | 刻剑求舟</title>
+  <meta name="author" content="朱恒伟">
+  
+  <meta name="description" content="个人站点，记录生活学习点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="PECS">
+  <meta property="og:site_name" content="刻剑求舟">
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/themes/bootstrap.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight-default.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/comment.css" media="screen" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+  
+  <!-- analytics -->
+  
+
+
+
+</head>
+</html>
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <a class="navbar-brand" href="/">刻剑求舟</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class="fa fa-folder"></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header page-header-inverse ">		
+			<h1 class="title title-inverse "> PECS</h1>
+		</div>		
+	
+
+
+
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h2 id="什么是PECS？"><a href="#什么是PECS？" class="headerlink" title="什么是PECS？"></a>什么是PECS？</h2><p><strong>PECS:Producer Extends，Consumer Super</strong>。泛型的本质是参数化类型</p>
+<p>意思是,如果参数化类型表示一个生产者，就使用&lt;? extends T&gt;,用于灵活读取,使得方法可以读取 E 或 E 的任意子类型的容器对象；</p>
+<p>如果它表示一个消费者，就使用&lt;? super T&gt;,用于灵活写入,使得对象可以写入父类型的容器，使得父类型的比较方法可以应用于子类对象。<br><a id="more"></a><br>不明白?往下看。</p>
+<h2 id="上界通配符-lt-extends-E-gt"><a href="#上界通配符-lt-extends-E-gt" class="headerlink" title="上界通配符 &lt; ? extends E&gt;"></a>上界通配符 &lt; ? extends E&gt;</h2><p>下面是Stack的API接口：</p>
+<pre><code>public class Stack&lt;E&gt; extends Vector&lt;E&gt;{
+    public Stack();
+    public void push(E e);
+    public E peek();
+    public E pop();
+    public boolean empty();
+    public int search(Object o);
+}
+</code></pre><p>假设想增加一个方法，按顺序将一些元素全部放入Stack中，你可能想到的实现方式如下：</p>
+<pre><code>public void pushAll(Iterable&lt;E&gt; src){
+    for(E e : src)
+        push(e);
+}
+</code></pre><p>假设有个Stack<number>，想要灵活的处理Integer，Long等Number的子类型的集合</number></p>
+<pre><code>Stack&lt;Number&gt; numberStack = new Stack&lt;Number&gt;();
+Iterable&lt;Integer&gt; integers = ....;
+numberStack.pushAll(integers);
+</code></pre><p>此时代码编译无法通过，因为对于类型Number和Integer来说，虽然Integer是Number的子类，但是对于任意Number集合（如List<number>）不是Integer集合（如List<integer>）的父类，因为泛型是不可变的。泛型中没有逻辑上的父子关系，如 List 并不是 List 的父类。两者擦除之后都是List.</integer></number></p>
+<p>java提供了一种叫有限通配符的参数化类型，将pushAll参数替换为“E的某个子类型的Iterable接口”：</p>
+<pre><code>public void pushAll(Iterable&lt;? extends E&gt; src){
+    for (E e: src)
+        push(e);
+}
+</code></pre><p>此时可以正确编译了，这里的&lt;? extends E&gt;就是producer-extends。这里的Iterable是生产者，要使用&lt;? extends E&gt;。因为Iterable&lt;? extends E&gt;可以容纳任何E的子类,即?可以是任何E的子类。在执行操作时，可迭代对象的每个元素都可以当作是E来操作。</p>
+<h2 id="下界通配符-lt-super-E-gt"><a href="#下界通配符-lt-super-E-gt" class="headerlink" title="下界通配符 &lt; ? super E&gt;"></a>下界通配符 &lt; ? super E&gt;</h2><p>与之对应的是：假设有一个方法popAll()方法，从Stack集合中弹出每个元素，添加到指定集合中去。</p>
+<pre><code>public void popAll(Collection&lt;E&gt; dst){
+  if(!isEmpty()){
+    dst.add(pop());
+  }
+}
+</code></pre><p>假设有一个Stack<number>和Collection<object>对象：</object></number></p>
+<pre><code>Stack&lt;Number&gt; numberStack = new Stack&lt;Number&gt;();
+Collection&lt;Object&gt; objects = ...;
+numberStack.popAll(objects);
+</code></pre><p>同样上面这段代码也无法编译通过，解决的办法是使用Collection&lt;? super E&gt;。这里的objects是消费者，因为是添加元素到objects集合中去,objects是一个接受内容的容器。使用Collection&lt;? super E&gt;后，无论objects是什么类型的集合，只要他是E的超类，所以不管这个参数化类型具体是什么类型都能将E装进objects集合中去。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>使用的规则就是：<strong>生产者有上限、消费者有下限,即PECS: producer-extends, costumer-super</strong></p>
+<p>如果需要遍历collection，并对每一项元素操作时，此时这个集合是生产者（生产元素），应该使用 Collection&lt;? extends E&gt;定义.</p>
+<p>如果是添加元素到collection中去，那么此时集合是消费者（消费元素,容纳）应该使用Collection&lt;? super E&gt;.</p>
+<p>如果既是生产者又是消费者，那使用参数化类型就没意义了，此时需要的是精确的参数类型。</p>
+<h3 id="泛型的通配符"><a href="#泛型的通配符" class="headerlink" title="泛型的通配符"></a>泛型的通配符</h3><p>泛型中有三种通配符形式：</p>
+<p><strong>&lt;?&gt;</strong> 无限制通配符 </p>
+<p><strong>&lt;? extends E&gt;</strong> 上界通配符, extends 关键字声明了类型的上界，表示参数化的类型可能是所指定的类型，或者是此类型的子类 </p>
+<p><strong>&lt;? super E&gt;</strong> 下界通配符, super 关键字声明了类型的下界，表示参数化的类型可能是指定的类型，或者是此类型的父类</p>
+	  
+	</div>
+
+	<!-- recommended posts -->
+	
+
+	<div>
+  	<center>
+	<div class="pagination">
+<ul class="pagination">
+	 
+				
+    	<li class="prev"><a href="/2018/04/17/RPC接口与消息MQ对比/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>上一页</a></li>
+  		
+
+        <li><a href="/archives"><i class="fa fa-archive"></i>Archive</a></li>
+
+		
+		   <li class="next"><a href="/2018/03/01/Mybatis批量插入返回自增ID/" class="alignright next">下一页<i class="fa fa-arrow-circle-o-right"></i></a></li>         
+        
+	
+</ul>
+</div>
+
+    </center>
+	</div>
+
+    <!-- share -->
+    
+        
+    <div class="bdsharebuttonbox">
+        <a href="#" class="bds_more" data-cmd="more"></a>
+        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+        <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+        <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+        <a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+        <a href="#" class="bds_evernotecn" data-cmd="evernotecn" title="分享到印象笔记"></a>
+        <a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+        <a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+    </div>
+    <script>
+        window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+
+
+        
+
+    
+	
+	<!-- comment -->
+	
+<section id="comment">
+  <h2 class="title">留言</h2>
+  
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2018-03-10 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    </li><li><a href="/categories/Java/">Java<span>5</span></a></li>
+  
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/Java/">Java<span>6</span></a></li> <li><a href="/tags/PECS/">PECS<span>1</span></a></li>
+    </ul>
+	</div>
+	
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2019 朱恒伟
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+</p> </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<!-- syntax highlighting -->
+
+
+</body>
+   </html>

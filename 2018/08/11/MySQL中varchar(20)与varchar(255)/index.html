@@ -1,0 +1,317 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>mysql中varchar(20)与varchar(255)区别 | 刻剑求舟</title>
+  <meta name="author" content="朱恒伟">
+  
+  <meta name="description" content="个人站点，记录生活学习点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="mysql中varchar(20)与varchar(255)区别">
+  <meta property="og:site_name" content="刻剑求舟">
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/themes/bootstrap.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight-default.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/comment.css" media="screen" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+  
+  <!-- analytics -->
+  
+
+
+
+</head>
+</html>
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <a class="navbar-brand" href="/">刻剑求舟</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class="fa fa-folder"></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header page-header-inverse ">		
+			<h1 class="title title-inverse "> mysql中varchar(20)与varchar(255)区别</h1>
+		</div>		
+	
+
+
+
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>首先看下为什么MySQL中varchar会经常设置成varchar(255)?</p>
+<p>MySQL 数据库的varchar类型在4.1以下的版本中的最大长度限制为255，其数据范围可以是0~255或1~255（根据不同版本数据库来定）。在 MySQL5.0以上的版本中，varchar数据类型的长度支持到了65535，也就是说可以存放65532个字节的数据，起始位和结束位占去了3个字 节，也就是说，在4.1或以下版本中需要使用固定的TEXT或BLOB格式存放的数据可以使用可变长的varchar来存放，这样就能有效的减少数据库文件的大小。<br><a id="more"></a><br>varchar(255) 并不是最优的字符长度，最优还是应该根据实际需要设置。但是255能够兼容低版本,只需要一个字节就能表示其长度,是保证能少出错的一个很好的默认值.</p>
+<h2 id="单列索引限制"><a href="#单列索引限制" class="headerlink" title="单列索引限制"></a>单列索引限制</h2><p>InnoDB存储引擎的表索引的前缀长度最长是767字节(bytes)，起因是2^8×3-1。767表示3个字符最大占用空间（utf8)。</p>
+<p>所以,如果需要建索引，就不能超过 767 bytes；utf8编码时 255*3=765bytes ,恰恰是能建索引情况下的最大值。</p>
+<p>但是在5.5以后，开始支持4个字节的utf8(utf8mb4)。255×4&gt;767, 于是增加了一个参数叫做innodb_large_prefix。这个参数默认值是OFF(5.7默认为ON)。当改为ON时，允许列索引最大达到3072。</p>
+<h2 id="联合索引限制"><a href="#联合索引限制" class="headerlink" title="联合索引限制"></a>联合索引限制</h2><p>3072</p>
+<p>InnoDB一个page的默认大小是16k。由于是Btree组织，要求叶子节点上一个page至少要包含两条记录（否则就退化链表了）。</p>
+<p>所以一个记录最多不能超过8k。又由于InnoDB的聚簇索引结构，一个二级索引要包含主键索引，因此每个单个索引不能超过4k （极端情况，pk和某个二级索引都达到这个限制）。由于需要预留和辅助空间，扣掉后不能超过3500，向下取个“整数”就是(1024*3)。</p>
+<h2 id="varchar-20-与varchar-255"><a href="#varchar-20-与varchar-255" class="headerlink" title="varchar(20)与varchar(255)"></a>varchar(20)与varchar(255)</h2><p>1.MySQL建立索引时,如果没有限制索引的大小，<strong>索引长度会默认采用的该字段的长度.</strong></p>
+<p>varchar(20)和varchar(255)对应的索引长度分别为20<em>3(utf-8)(+2+1),255</em>3(utf-8)(+2+1)，其中”+2”用来存储长度信息，“+1”用来标记是否为空，加载索引信息时用varchar(255)类型会占用更多的内存； （当字段定义为非空的时候，是否为空的标记将不占用字节）</p>
+<p>2.varchar(20)与varchar(255)都是可变的字符串</p>
+<p>通常情况下使用varchar(20)和varchar(255)保存较短的字符串’hello world’时,占用的空间都是一样的，但使用长度较短的列却有巨大的优势。较大的列使用更多的内存，MySQL通常会分配固定大小的内存块来保存值，这对排序或使用基于内存的临时表尤其不好。同样,也会发生在使用文件排序或者基于磁盘的临时表时。 </p>
+<p>(当使用ROW_FORMAT=FIXED创建MyISAM表时，会为每行使用固定的长度空间，这样设置不同的varchar长度值时，存储相同数据所占用的空间是不一样)</p>
+<p>3.字符串较长</p>
+<p>当20&lt;字符长度&lt;255,varchar(20)会报错,varchar(255)会正常插入.</p>
+<p>4.字符串特别长</p>
+<p>字符长度&gt;255,可以选择更大的值,VARCHAR(M)定义的列长度为可变长字符串，M取值可以为0~65535(64K)之间，(VARCHAR的最大有效长度由最大行大小和使用的字符集确定。整体最大长度是65,532字节）</p>
+<p>但是,服务器选项 innodb_large_prefix关闭时，InnoDB 引擎单一字段索引的长度最大为 767 字节，当字节超过这个长度时,必须建立小于等于767字节的前缀索引。</p>
+<p>此外，BLOB和TEXT类型的列只能创建前缀索引。</p>
+<p>前缀索引能提高索引建立速度和检索速度，但是下面情况是无法使用前缀索引的：</p>
+<ul>
+<li><p>索引覆盖扫描</p>
+</li>
+<li><p>通过索引的排序（order by, group by）</p>
+</li>
+</ul>
+<h2 id="varchar类型限制"><a href="#varchar类型限制" class="headerlink" title="varchar类型限制"></a>varchar类型限制</h2><p><strong>1.存储限制</strong></p>
+<p>varchar 字段是将实际内容单独存储在聚簇索引之外，内容开头用1到2个字节表示实际长度（长度超过255时需要2个字节），因此最大长度不能超过65535字节。</p>
+<p><strong>2.编码长度限制</strong></p>
+<p>字符类型若为gbk，每个字符最多占2个字节，最大长度不能超过32766字符;</p>
+<p>字符类型若为utf8，每个字符最多占3个字节，最大长度不能超过21845字符。</p>
+<p>若定义的时候超过上述限制，则varchar字段会被强行转为text类型，并产生warning。</p>
+<p><strong>3. 行长度限制</strong></p>
+<p>实际应用中,导致varchar长度限制的通常是一行定义的长度,就是表里所有字段定义的长度总和。<a href="https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html</a></p>
+<p> MySQL要求一行的定义长度不能超过65535。若定义的表长度超过这个值，则提示</p>
+<blockquote>
+<p>ERROR 1118 (42000): Row size too large. The maximum row size for the used table type, not counting BLOBs, is 65535. You have to change some columns to TEXT or BLOBs。</p>
+</blockquote>
+<p>之所以可以用TEXT或者BLOBS代替,官方解释如下:</p>
+<blockquote>
+<p>The internal representation of a MySQL table has a maximum row size limit of 65,535 bytes, even if the storage engine is capable of supporting larger rows. BLOB andTEXT columns only contribute 9 to 12 bytes toward the row size limit because their contents are stored separately from the rest of the row.</p>
+</blockquote>
+<p>TEXT和BLOB在行限制中,只占用其中的9-12字节,因为实际内容的存储是和其他行分离的.</p>
+<p>varchar在一般情况下存储都够用了。如果遇到了大文本，考虑使用TEXT/MEDIUMTEXT/LONGTEXT，LONGTEXT最大能到4G。</p>
+	  
+	</div>
+
+	<!-- recommended posts -->
+	
+
+	<div>
+  	<center>
+	<div class="pagination">
+<ul class="pagination">
+	 
+				
+    	<li class="prev"><a href="/2018/09/21/MySQL中乐观锁的两种实现方式/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>上一页</a></li>
+  		
+
+        <li><a href="/archives"><i class="fa fa-archive"></i>Archive</a></li>
+
+		
+		   <li class="next"><a href="/2018/07/01/MySQL中timestamp与datetime对比/" class="alignright next">下一页<i class="fa fa-arrow-circle-o-right"></i></a></li>         
+        
+	
+</ul>
+</div>
+
+    </center>
+	</div>
+
+    <!-- share -->
+    
+        
+    <div class="bdsharebuttonbox">
+        <a href="#" class="bds_more" data-cmd="more"></a>
+        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+        <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+        <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+        <a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+        <a href="#" class="bds_evernotecn" data-cmd="evernotecn" title="分享到印象笔记"></a>
+        <a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+        <a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+    </div>
+    <script>
+        window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+
+
+        
+
+    
+	
+	<!-- comment -->
+	
+<section id="comment">
+  <h2 class="title">留言</h2>
+  
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2018-08-11 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    </li><li><a href="/categories/mysql/">mysql<span>5</span></a></li>
+  
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/mysql/">mysql<span>7</span></a></li> <li><a href="/tags/varchar/">varchar<span>1</span></a></li>
+    </ul>
+	</div>
+	
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2019 朱恒伟
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+</p> </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<!-- syntax highlighting -->
+
+
+</body>
+   </html>
