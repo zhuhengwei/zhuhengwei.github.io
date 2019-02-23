@@ -3,7 +3,7 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>MySQL | 刻剑求舟</title>
+  <title>Mysql | 刻剑求舟</title>
   <meta name="author" content="朱恒伟">
   
   <meta name="description" content="个人站点，记录生活学习点滴">
@@ -96,7 +96,7 @@
 
 <!-- title -->
 <div class="page-header page-header-inverse ">
-  <h1 class="archive-title-category title title-inverse ">MySQL</h1>
+  <h1 class="archive-title-category title title-inverse ">Mysql</h1>
 </div>
 
 <div class="row page">
@@ -115,8 +115,8 @@
 	
 	<!-- display as entry -->	
 		<h3 class="title">
-			<div class="date"> 2015-07-10 </div>
-			<div class="article-title"><a href="/2015/07/10/mysql随机更新表里的数据/">mysql随机更新表里的数据</a></div>						
+			<div class="date"> 2018-03-01 </div>
+			<div class="article-title"><a href="/2018/03/01/Mybatis批量插入返回自增ID/">Mybatis批量插入返回自增ID</a></div>						
 		</h3>
 	
 
@@ -125,32 +125,11 @@
   <div class="row">
 	
 	
-		<h3 id="mysql-随机更新数据库里的几条数据"><a href="#mysql-随机更新数据库里的几条数据" class="headerlink" title="mysql 随机更新数据库里的几条数据"></a>mysql 随机更新数据库里的几条数据</h3><p>有些情况，比如下图表中数据，除了id不一样，其余都一样。如下图：<br><img src="http://img.blog.csdn.net/20150710205210086" alt></p>
-<p>出于某些原因，我们不能得到其id，但是想<strong>更新其中的某些数据,不是全部</strong>，因为数据都是一样的，所以更新其中的哪一条都是一样的。<br>那么要更新其中的比如3条数据怎么办呢？<br>
+		<p>首先查了官网文档,说明如下:详情在<a href="http://www.mybatis.org/mybatis-3/zh/sqlmap-xml.html#insert_update_and_delete" target="_blank" rel="noopener">http://www.mybatis.org/mybatis-3/zh/sqlmap-xml.html#insert_update_and_delete</a><br><img src="https://i.imgur.com/npyhrJr.png" alt><br>mybatis 3.3.1以上的版本已经支持批量返回了，支持注解和mapper文件两种方式,mybatis在执行完insert语句后会专门针对主键生成进行处理,在sql插入后再将自增的值赋值到实体上。代码pr链接：<a href="https://github.com/mybatis/mybatis-3/pull/547/files" target="_blank" rel="noopener">https://github.com/mybatis/mybatis-3/pull/547/files</a></p>
+<p>然而!!按官网操作,不能自动生成,mybatis 版本3.4.6<br>
 	
 	</p></div>
-  <a type="button" href="/2015/07/10/mysql随机更新表里的数据/#more" class="btn btn-default more">阅读此文</a>
-</div>
-
-	       
-		     
-	
-	<!-- display as entry -->	
-		<h3 class="title">
-			<div class="date"> 2015-07-04 </div>
-			<div class="article-title"><a href="/2015/07/04/mysql批量备份多表/">mysql批量备份多表</a></div>						
-		</h3>
-	
-
-
-		     <div class="entry">
-  <div class="row">
-	
-	
-		<h3 id="1-批量备份-mysql-多表，每个表一个-sql"><a href="#1-批量备份-mysql-多表，每个表一个-sql" class="headerlink" title="1. 批量备份 mysql 多表，每个表一个.sql"></a>1. 批量备份 mysql 多表，每个表一个.sql</h3><p>对于每天生成的表，需要把以前的表备份，即定义起始的表和结束的表，针对有规律的表的备份。<br>
-	
-	</p></div>
-  <a type="button" href="/2015/07/04/mysql批量备份多表/#more" class="btn btn-default more">阅读此文</a>
+  <a type="button" href="/2018/03/01/Mybatis批量插入返回自增ID/#more" class="btn btn-default more">阅读此文</a>
 </div>
 
 	       
@@ -195,11 +174,13 @@
 		
 			<li><a href="/categories/Git/">Git<span>2</span></a></li>
 		
-			<li><a href="/categories/Java/">Java<span>5</span></a></li>
+			<li><a href="/categories/Java/">Java<span>4</span></a></li>
 		
 			<li><a href="/categories/MySQL/">MySQL<span>2</span></a></li>
 		
-			<li><a href="/categories/Java/Mybatis/">Mybatis<span>1</span></a></li>
+			<li><a href="/categories/Mysql/Mybatis/">Mybatis<span>1</span></a></li>
+		
+			<li><a href="/categories/Mysql/">Mysql<span>1</span></a></li>
 		
 			<li><a href="/categories/Redis/">Redis<span>1</span></a></li>
 		
@@ -228,45 +209,45 @@
 		<h4>标签云</h4>
 		<ul class="tag_box inline list-unstyled">		
 		
-			<li><a href="/tags/Tomcat/">Tomcat<span>1</span></a></li>
+			<li><a href="/tags/binlog/">binlog<span>1</span></a></li>
 		
-			<li><a href="/tags/复杂类型/">复杂类型<span>1</span></a></li>
+			<li><a href="/tags/进程/">进程<span>1</span></a></li>
 		
-			<li><a href="/tags/IP/">IP<span>1</span></a></li>
+			<li><a href="/tags/Spring-Boot/">Spring Boot<span>3</span></a></li>
 		
-			<li><a href="/tags/缓存/">缓存<span>1</span></a></li>
-		
-			<li><a href="/tags/storm/">storm<span>1</span></a></li>
-		
-			<li><a href="/tags/PECS/">PECS<span>1</span></a></li>
+			<li><a href="/tags/正向代理/">正向代理<span>1</span></a></li>
 		
 			<li><a href="/tags/备份/">备份<span>1</span></a></li>
 		
-			<li><a href="/tags/特性/">特性<span>1</span></a></li>
+			<li><a href="/tags/比较器/">比较器<span>1</span></a></li>
 		
-			<li><a href="/tags/域名/">域名<span>1</span></a></li>
+			<li><a href="/tags/MQ/">MQ<span>1</span></a></li>
 		
-			<li><a href="/tags/Spring/">Spring<span>4</span></a></li>
+			<li><a href="/tags/随机/">随机<span>1</span></a></li>
+		
+			<li><a href="/tags/时间/">时间<span>1</span></a></li>
+		
+			<li><a href="/tags/大数据/">大数据<span>1</span></a></li>
+		
+			<li><a href="/tags/RPC/">RPC<span>1</span></a></li>
+		
+			<li><a href="/tags/PECS/">PECS<span>1</span></a></li>
+		
+			<li><a href="/tags/中文/">中文<span>1</span></a></li>
 		
 			<li><a href="/tags/shell/">shell<span>2</span></a></li>
 		
-			<li><a href="/tags/mysql/">mysql<span>7</span></a></li>
-		
-			<li><a href="/tags/Java8/">Java8<span>2</span></a></li>
-		
-			<li><a href="/tags/lombok/">lombok<span>1</span></a></li>
+			<li><a href="/tags/复杂类型/">复杂类型<span>1</span></a></li>
 		
 			<li><a href="/tags/主键/">主键<span>1</span></a></li>
 		
-			<li><a href="/tags/Mybatis/">Mybatis<span>1</span></a></li>
-		
 			<li><a href="/tags/Redis/">Redis<span>1</span></a></li>
 		
-			<li><a href="/tags/Git/">Git<span>2</span></a></li>
+			<li><a href="/tags/集群/">集群<span>1</span></a></li>
 		
-			<li><a href="/tags/varchar/">varchar<span>1</span></a></li>
+			<li><a href="/tags/IP/">IP<span>1</span></a></li>
 		
-			<li><a href="/tags/时间/">时间<span>1</span></a></li>
+			<li><a href="/tags/空文件夹/">空文件夹<span>1</span></a></li>
 		
 		
 		   <li><a href="/tags">...<span>40</span></a></li>
@@ -331,7 +312,7 @@
   <footer> <p>
   &copy; 2019 朱恒伟
   
-      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+      by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
 </p> </footer>
 </div> <!-- container-narrow -->
   
@@ -365,15 +346,51 @@
 
 </body>
    </html>
-<span>1</span></a></li>
+by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+</p> </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+<!-- syntax highlighting -->
+
+
+</body>
+   </html>
+/a></li>
 		
-			<li><a href="/tags/线程/">线程<span>1</span></a></li>
+			<li><a href="/tags/乐观锁/">乐观锁<span>1</span></a></li>
 		
-			<li><a href="/tags/aop/">aop<span>1</span></a></li>
+			<li><a href="/tags/进程/">进程<span>1</span></a></li>
 		
-			<li><a href="/tags/MQ/">MQ<span>1</span></a></li>
+			<li><a href="/tags/base4/">base4<span>1</span></a></li>
 		
-			<li><a href="/tags/反向代理/">反向代理<span>1</span></a></li>
+			<li><a href="/tags/mysql/">mysql<span>7</span></a></li>
+		
+			<li><a href="/tags/备份/">备份<span>1</span></a></li>
 		
 		
 		   <li><a href="/tags">...<span>40</span></a></li>
@@ -438,7 +455,7 @@
   <footer> <p>
   &copy; 2019 朱恒伟
   
-      with help from <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
+      by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>.    
 </p> </footer>
 </div> <!-- container-narrow -->
   
